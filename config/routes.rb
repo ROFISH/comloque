@@ -54,5 +54,7 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  resources :themes
+  resources :themes do
+    resources :templates
+  end
 end
