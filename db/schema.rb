@@ -11,13 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140507053011) do
+ActiveRecord::Schema.define(version: 20140507070242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "forums", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "permalink"
+  end
+
+  create_table "permalinks", force: true do |t|
+    t.string   "name"
+    t.integer  "thang_id"
+    t.string   "thang_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

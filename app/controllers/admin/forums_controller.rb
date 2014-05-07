@@ -46,6 +46,6 @@ class Admin::ForumsController < ApplicationController
 private
 
   def forum_params
-    params[:forum].permit(:name)
+    params[:forum].permit(:name,:permalink)
   end
 end
