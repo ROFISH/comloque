@@ -57,4 +57,5 @@ Rails.application.routes.draw do
   resources :themes do
     resources :templates
   end
+  root 'forum#index'
 end
