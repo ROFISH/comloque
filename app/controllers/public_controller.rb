@@ -17,7 +17,11 @@ class PublicController < ActionController::Base
     return no_template_found(options) if template.blank?
 
     compiled_liquid = Liquid::Template.parse(template.source)
-    compiled_liquid.render(public_view_assigns)
+    if Rails.env.development?
+      compiled_liquid.render(public_view_assigns)
+    else
+      compiled_liquid.render!(public_view_assigns)
+    end
   end
 
 private
