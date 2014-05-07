@@ -1,0 +1,18 @@
+.page-header
+  %h1 Forums
+
+%p
+  =link_to "New Forum", new_admin_forum_path, class:"btn btn-primary"
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Actions
+  %tbody
+    -@forums.each do |forum|
+      %tr
+        %td=link_to forum.name, [:admin,forum]
+        %td
+          =link_to "Edit",[:edit,:admin,forum], class:'btn btn-sm btn-success'
+          =link_to "Destroy",[:admin,forum], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"

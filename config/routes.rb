@@ -54,6 +54,10 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
+  namespace :admin do
+    resources :forums
+  end
+
   resources :themes do
     resources :templates
   end
