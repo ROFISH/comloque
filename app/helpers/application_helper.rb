@@ -42,8 +42,22 @@ end
 
 class ActionView::Helpers::FormBuilder
   def bs_field(thing,main_content)
-    @template.content_tag(:div, class: "form-group") do
-      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content, class: "col-sm-7 col-md-5")
+    has_errors = !object.errors[thing].blank?
+
+    error_text = if has_errors
+      ret = ActiveSupport::SafeBuffer.new
+      object.errors[thing].map do |error|
+        ret << @template.content_tag(:span,"#{thing.to_s.titleize} #{error}",class: 'help-block')
+      end
+      ret
+    else
+      ""
+    end
+
+    divclass = "form-group"
+    divclass += " has-error" if has_errors
+    @template.content_tag(:div, class: divclass) do
+      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-7 col-md-5")
     end
   end
 
