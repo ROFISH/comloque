@@ -14,7 +14,7 @@ class PublicController < ActionController::Base
     return no_template_found(options) if template.blank?
 
     compiled_liquid = Liquid::Template.parse(template.source)
-    compiled_liquid.render
+    compiled_liquid.render(public_view_assigns)
   end
 
 private
@@ -28,5 +28,11 @@ private
 
   def no_template_found(options)
     "Unable to find a template for \"#{options[:template]}\" in [#{options[:prefixes].join(',')}]"
+  end
+
+  COMLOQUE_PROTECTED_IVARS = %w(theme)
+
+  def public_view_assigns
+    view_assigns.reject{|k,v| COMLOQUE_PROTECTED_IVARS.include?(k)}
   end
 end
