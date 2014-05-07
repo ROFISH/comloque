@@ -61,5 +61,8 @@ Rails.application.routes.draw do
   resources :themes do
     resources :templates
   end
+
   root 'forum#index'
+  get '/forum' => 'forum#index'
+  get '/forum/:cat/:forum' => 'forum#topiclist'
 end

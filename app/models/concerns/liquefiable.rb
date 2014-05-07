@@ -31,7 +31,10 @@ module Liquefiable
 
   def to_liquid
     allowable = self.class::LIQUEFIABLE_ATTRIBUTES
-    attributes.select{|k,v| allowable.include?(k)}
+    allowed_attributes = attributes.select{|k,v| allowable.include?(k)}
+    allowed_methods = Hash[self.class::LIQUEFIABLE_METHODS.map{|sym| [sym.to_s,__send__(sym)]}]
+
+    allowed_attributes.merge(allowed_methods)
   end
 
 end
