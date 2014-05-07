@@ -12,8 +12,9 @@ class PublicController < ActionController::Base
   def render_to_body(options)
     template = get_template(options)
     return no_template_found(options) if template.blank?
-    
-    template.source
+
+    compiled_liquid = Liquid::Template.parse(template.source)
+    compiled_liquid.render
   end
 
 private
