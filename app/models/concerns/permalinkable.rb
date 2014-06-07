@@ -53,9 +53,9 @@ module Permalinkable
     Permalink.create(name:self.permalink,thang:self)
   end
 
-  def find_by_permalink(permalink)
-    permalink = Permalink.find_by_name_and_thang_type(params[:forum],self.class.base_class.name)
+  def find_by_permalink(permalinktext)
+    permalinkmodel = Permalink.find_by_name_and_thang_type(permalinktext,self.class.base_class.name)
     # will return nil if permalink is blank?
-    permalink.try(:thang)
+    permalinkmodel.try(:thang)
   end
 end
