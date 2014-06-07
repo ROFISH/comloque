@@ -30,9 +30,9 @@ class PublicController < ActionController::Base
 
     compiled_liquid = Liquid::Template.parse(template.source)
     if Rails.env.development?
-      compiled_liquid.render(public_view_assigns)
-    else
       compiled_liquid.render!(public_view_assigns)
+    else
+      compiled_liquid.render(public_view_assigns)
     end
   end
 
