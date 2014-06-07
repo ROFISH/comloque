@@ -44,12 +44,22 @@ module Permalinkable
 
   module ClassMethods
     def find_by_permalink(permalinktext)
+      # attempt to look up thing first directly by the canonical permalink first. it's faster
+      thing = find_by(permalink:permalinktext)
+      return thing if thing
+
+      # otherwise, we're not using the canonical link, lookup in the permalink table
       permalinkmodel = Permalink.find_by_name_and_thang_type(permalinktext,self.base_class.name)
       # will return nil if permalink is blank?
       permalinkmodel.try(:thang)
     end
 
     def find_by_permalink_and_scope_id(permalinktext,scope_id)
+      # attempt to look up thing first directly by the canonical permalink first. it's faster
+      thing = find_by({:permalink=>permalinktext,permalinkable_scoping=>scope_id})
+      return thing if thing
+
+      # otherwise, we're not using the canonical link, lookup in the permalink table
       permalinkmodel = Permalink.find_by_name_and_thang_type_and_scope_id(permalinktext,self.base_class.name,scope_id)
       # will return nil if permalink is blank?
       permalinkmodel.try(:thang)
