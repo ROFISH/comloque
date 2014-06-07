@@ -1,5 +1,6 @@
 class ForumController < PublicController
-  before_filter :require_forum, :only=>[:topiclist,:newtopic,:create_message]
+  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic]
+  before_filter :require_topic, only:[:topic]
   def index
     @forums = Forum.all.to_a
   end
@@ -9,6 +10,9 @@ class ForumController < PublicController
   end
 
   def newtopic
+  end
+
+  def topic
   end
 
   before_filter :process_create_topic, only:[:create_message], if:->(x){ @topic.blank? }
@@ -39,6 +43,11 @@ private
   def require_forum
     @forum = Forum.find_by_permalink(params[:forum])
     raise ActiveRecord::RecordNotFound if @forum.blank?
+  end
+
+  def require_topic
+    @topic = Topic.find_by_permalink_and_scope_id(params[:topic],@forum.id)
+    raise ActiveRecord::RecordNotFound if @topic.blank?
   end
 
   def process_create_topic

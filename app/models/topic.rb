@@ -5,7 +5,7 @@ class Topic < ActiveRecord::Base
 
   include Liquefiable
   LIQUEFIABLE_ATTRIBUTES = %w(name).freeze
-  LIQUEFIABLE_METHODS = %i(url user).freeze
+  LIQUEFIABLE_METHODS = %i(url user messages).freeze
 
   # this before needs to be before the Permalinkable include
   @@permalinkable_autoset = :name
