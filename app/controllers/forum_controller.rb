@@ -5,6 +5,7 @@ class ForumController < PublicController
   end
 
   def topiclist
+    @topics = @forum.topics
   end
 
   def newtopic
