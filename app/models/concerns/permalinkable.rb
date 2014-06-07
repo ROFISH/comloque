@@ -29,12 +29,15 @@ module Permalinkable
 
   # end
 
-  included do
+  included do |base|
     has_many :permalinks, as: :thang
+
+    @@autoset = base.const_defined?(:AUTOSET_PERMALINK) ? base::AUTOSET_PERMALINK : false
 
     if attribute_names.include?("permalink")
       validate :new_permalink_doesnt_exist, if:->(x){x.permalink_changed?}
-      before_save :save_permalink, if:->(x){x.permalink_changed?}
+      before_create :set_permalink_from_autoset, if:->(x){x.permalink.blank?} if @@autoset
+      after_save :save_permalink, if:->(x){x.permalink_changed?}
     end
   end
 
@@ -59,5 +62,14 @@ module Permalinkable
 
   def save_permalink
     Permalink.create(name:self.permalink,thang:self)
+  end
+
+  def set_permalink_from_autoset
+    self.permalink = __send__(@@autoset).parameterize
+    permalink_will_change!
+    1000.times do |i|
+      break unless Topic.exists?(permalink:self.permalink)
+      self.permalink = __send__(@@autoset).parameterize+"-#{i+1}"
+    end
   end
 end
