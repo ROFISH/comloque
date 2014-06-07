@@ -38,6 +38,14 @@ module Permalinkable
     end
   end
 
+  module ClassMethods
+    def find_by_permalink(permalinktext)
+      permalinkmodel = Permalink.find_by_name_and_thang_type(permalinktext,self.base_class.name)
+      # will return nil if permalink is blank?
+      permalinkmodel.try(:thang)
+    end
+  end
+
   def new_permalink_doesnt_exist
     # AR uses `.class.base_class.name` to determine what goes in the type
     foundpermalink = Permalink.where(thang_type:self.class.base_class.name,name:self.permalink).to_a
@@ -51,11 +59,5 @@ module Permalinkable
 
   def save_permalink
     Permalink.create(name:self.permalink,thang:self)
-  end
-
-  def find_by_permalink(permalinktext)
-    permalinkmodel = Permalink.find_by_name_and_thang_type(permalinktext,self.class.base_class.name)
-    # will return nil if permalink is blank?
-    permalinkmodel.try(:thang)
   end
 end
