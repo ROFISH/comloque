@@ -8,7 +8,8 @@ class Topic < ActiveRecord::Base
   LIQUEFIABLE_METHODS = %i(url user).freeze
 
   # this before needs to be before the Permalinkable include
-  AUTOSET_PERMALINK = :name
+  @@permalinkable_autoset = :name
+  @@permalinkable_scoping = :forum_id
   include Permalinkable
 
   def url

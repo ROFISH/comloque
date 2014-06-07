@@ -32,11 +32,12 @@ module Permalinkable
   included do |base|
     has_many :permalinks, as: :thang
 
-    @@autoset = base.const_defined?(:AUTOSET_PERMALINK) ? base::AUTOSET_PERMALINK : false
+    cattr_reader :permalinkable_autoset if base.class_variable_defined?(:@@permalinkable_autoset)
+    cattr_reader :permalinkable_scoping
 
     if attribute_names.include?("permalink")
       validate :new_permalink_doesnt_exist, if:->(x){x.permalink_changed?}
-      before_create :set_permalink_from_autoset, if:->(x){x.permalink.blank?} if @@autoset
+      before_create :set_permalink_from_autoset, if:->(x){x.permalink.blank?} if base.class_variable_defined?(:@@permalinkable_autoset)
       after_save :save_permalink, if:->(x){x.permalink_changed?}
     end
   end
@@ -47,11 +48,17 @@ module Permalinkable
       # will return nil if permalink is blank?
       permalinkmodel.try(:thang)
     end
+
+    def find_by_permalink_and_scope_id(permalinktext,scope_id)
+      permalinkmodel = Permalink.find_by_name_and_thang_type_and_scope_id(permalinktext,self.base_class.name,scope_id)
+      # will return nil if permalink is blank?
+      permalinkmodel.try(:thang)
+    end
   end
 
   def new_permalink_doesnt_exist
     # AR uses `.class.base_class.name` to determine what goes in the type
-    foundpermalink = Permalink.where(thang_type:self.class.base_class.name,name:self.permalink).to_a
+    foundpermalink = Permalink.where(thang_type:self.class.base_class.name,name:self.permalink,scope_id:_permalinkable_scope_id).to_a
     # reject all permalinks if the one found is of the same type/id
     foundpermalink.reject!{|x| x.thang_id == self.id}
     # if the same permalink exists (and it's not the same object)
@@ -60,16 +67,21 @@ module Permalinkable
     end
   end
 
+  def _permalinkable_scope_id
+    return nil unless self.class.permalinkable_scoping
+    __send__(self.class.permalinkable_scoping)
+  end
+
   def save_permalink
-    Permalink.create(name:self.permalink,thang:self)
+    Permalink.create(name:self.permalink,thang:self,scope_id:_permalinkable_scope_id)
   end
 
   def set_permalink_from_autoset
-    self.permalink = __send__(@@autoset).parameterize
+    self.permalink = __send__(self.class.permalinkable_autoset).parameterize
     permalink_will_change!
     1000.times do |i|
       break unless Topic.exists?(permalink:self.permalink)
-      self.permalink = __send__(@@autoset).parameterize+"-#{i+1}"
+      self.permalink = __send__(self.class.permalinkable_autoset).parameterize+"-#{i+1}"
     end
   end
 end
