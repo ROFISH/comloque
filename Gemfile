@@ -41,6 +41,9 @@ gem 'haml'
 # Liquid is used for the public rendering engine.
 gem 'liquid'
 
+# Use Google as a login source, at least temporarily.
+gem 'omniauth-google-oauth2'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

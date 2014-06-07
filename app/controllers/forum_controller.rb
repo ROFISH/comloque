@@ -7,6 +7,24 @@ class ForumController < PublicController
   def topiclist
   end
 
+
+  # this shouldn't be in the forum_controller, but for now it lives here until better loginy pages can be made
+  def login
+    email = request.env["omniauth.auth"]['info']['email']
+    user = User.find_by_email(email)
+    if user.blank?
+      # TODO: let the user select their own username
+      user = User.create(name:email,email:email)
+    end
+    session[:user_id] = user.id
+    redirect_to action: :index
+  end
+
+  def logout
+    reset_session
+    redirect_to action: :index
+  end
+
 private
   def require_forum
     permalink = Permalink.find_by_name_and_thang_type(params[:forum],"Forum")

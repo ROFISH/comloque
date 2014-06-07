@@ -65,4 +65,6 @@ Rails.application.routes.draw do
   root 'forum#index'
   get '/forum' => 'forum#index'
   get '/forum/:cat/:forum' => 'forum#topiclist'
+  get '/auth/google_oauth2/callback' => 'forum#login'
+  get '/logout' => 'forum#logout'
 end

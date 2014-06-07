@@ -7,12 +7,22 @@ class PublicController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_filter :get_theme
+  before_filter :get_user
   def get_theme
     @theme = Theme.first # debug for now
   end
 
+  def get_user
+    if session[:user_id].is_a?(Integer)
+      @user = User.find(session[:user_id])
+    end
+  end
+
   # Hard overwrite the rendering system to render the templates
   def render_to_body(options)
+    # render text:"blah", layout:false
+    return options[:text] if !options[:text].blank? && !options[:layout]
+
     template = get_template(options)
     return no_template_found(options) if template.blank?
 
