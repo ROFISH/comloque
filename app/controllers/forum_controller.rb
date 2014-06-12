@@ -46,7 +46,7 @@ private
   end
 
   def require_topic
-    @topic = Topic.find_by_permalink_and_scope_id(params[:topic],@forum.id)
+    @topic = @forum.topics.find_by_permalink_and_scope_id(params[:topic],@forum.id)
   end
 
   def require_topic!
