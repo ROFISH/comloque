@@ -11,6 +11,7 @@ module Comloque
       add_default_name_and_id(hidden_tag_options)
 
       options['id'] = "ace_field_#{@method_name}"
+      original_value = options.delete("value") { value_before_type_cast(object) }
 
       script = <<JAVASCRIPT
         var editor = ace.edit("#{options['id']}")
@@ -27,14 +28,16 @@ module Comloque
         editor.getSession().on('change', function(){
           $("##{hidden_tag_options['id']}").val(editor.getSession().getValue());
         });
+        var loldefault = #{original_value.to_s.to_json}
+        editor.getSession().setValue(loldefault)
+        $("##{hidden_tag_options['id']}").val(loldefault)
 JAVASCRIPT
 
       options.delete('mode')
 
       "\n".html_safe +
-        hidden_field_tag(hidden_tag_options['name'],hidden_tag_options.delete("value") { value_before_type_cast(object) }, hidden_tag_options) +
-        # dumb stupid haml trying to screw with my whitespace :/
-        Haml::Helpers.find_and_preserve(content_tag("pre",options.delete("value") { value_before_type_cast(object) }, options),['pre']) +
+        hidden_field_tag(hidden_tag_options['name'],'', hidden_tag_options) +
+        content_tag("pre",'', options) +
         content_tag("script",script.html_safe)
     end
   end
