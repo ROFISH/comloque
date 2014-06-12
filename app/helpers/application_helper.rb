@@ -21,7 +21,7 @@ module Comloque
             name: 'myCommand',
             bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
             exec: function(editor) {
-              $('#asset_form').submit();
+              $("##{hidden_tag_options['id']}").parents('form').submit()
             },
             readOnly: true // false if this command should not apply in readOnly mode
         });
@@ -85,6 +85,11 @@ class ActionView::Helpers::FormBuilder
   end
 
   def bs_submit(btntext=nil)
+    @template.content_tag(:div, class: "form-group", id: "alert-saved", style:"display:none;") do
+      @template.content_tag(:div, class: "col-sm-offset-2 col-sm-7 col-md-5") do
+        @template.content_tag(:div, "#{object_name.titleize} Saved.", class: "alert alert-success")
+      end
+    end +
     @template.content_tag(:div, class: "form-group") do
       @template.content_tag(:div, submit(btntext, class:"btn btn-primary"), class: "col-sm-offset-2 col-sm-7 col-md-5")
     end

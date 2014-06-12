@@ -27,7 +27,10 @@ class TemplatesController < ApplicationController
   def update
     @template = @theme.templates.find(params[:id])
     if @template.update_attributes(template_params)
-      redirect_to @theme
+      respond_to do |format|
+        format.js { head :ok }
+        format.html {redirect_to @theme}
+      end
     else
       render action:'new'
     end
