@@ -1,9 +1,9 @@
 class Forum < ActiveRecord::Base
   has_many :topics
 
-  include Liquefiable
-  LIQUEFIABLE_ATTRIBUTES = %w(name).freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
   LIQUEFIABLE_METHODS = %i(url).freeze
+  include Liquefiable
 
   include Permalinkable
 

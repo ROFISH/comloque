@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  include Liquefiable
-  LIQUEFIABLE_ATTRIBUTES = %w(name).freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
   LIQUEFIABLE_METHODS = [].freeze
+  include Liquefiable
 end

@@ -29,12 +29,28 @@ module Liquefiable
 
   # end
 
-  def to_liquid
-    allowable = self.class::LIQUEFIABLE_ATTRIBUTES
-    allowed_attributes = attributes.select{|k,v| allowable.include?(k)}
-    allowed_methods = Hash[self.class::LIQUEFIABLE_METHODS.map{|sym| [sym.to_s,__send__(sym)]}]
+  included do |base|
+    klass = Class.new(Liquid::Drop)
+    klass.__send__(:define_method,:initialize) {|thing| @thing = thing}
 
-    allowed_attributes.merge(allowed_methods)
+    base::LIQUEFIABLE_ATTRIBUTES.each do |attr_name|
+      klass.__send__(:define_method,attr_name) do
+        @thing.attributes[attr_name.to_s]
+      end
+    end
+
+    base::LIQUEFIABLE_METHODS.each do |method_name|
+      klass.__send__(:define_method,method_name) do
+        Rails.logger.info(method_name)
+        @thing.__send__(method_name)
+      end
+    end
+
+    base.const_set(:Drop,klass)
+  end
+
+  def to_liquid
+    self.class::Drop.new(self)
   end
 
 end
