@@ -68,6 +68,7 @@ Rails.application.routes.draw do
   get '/forum/:cat/:forum/newtopic' => 'forum#newtopic'
   post '/forum/:cat/:forum/newtopic' => 'forum#create_message'
   get '/forum/:cat/:forum/:topic' => 'forum#topic'
+  post '/forum/:cat/:forum/:topic/reply' => 'forum#create_message'
 
   get '/auth/google_oauth2/callback' => 'forum#login'
   get '/logout' => 'forum#logout'

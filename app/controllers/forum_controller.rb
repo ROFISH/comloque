@@ -1,6 +1,6 @@
 class ForumController < PublicController
   before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic]
-  before_filter :require_topic, only:[:topic]
+  before_filter :require_topic!, only:[:topic]
   def index
     @forums = Forum.all.to_a
   end
@@ -15,12 +15,12 @@ class ForumController < PublicController
   def topic
   end
 
+  before_filter :require_topic, only:[:create_message]
   before_filter :process_create_topic, only:[:create_message], if:->(x){ @topic.blank? }
   before_filter :process_create_message, only:[:create_message]
   def create_message
-    redirect_to action: :topiclist
+    redirect_to action: :topic, topic: @topic.permalink
   end
-
 
   # this shouldn't be in the forum_controller, but for now it lives here until better loginy pages can be made
   def login
@@ -47,6 +47,10 @@ private
 
   def require_topic
     @topic = Topic.find_by_permalink_and_scope_id(params[:topic],@forum.id)
+  end
+
+  def require_topic!
+    require_topic
     raise ActiveRecord::RecordNotFound if @topic.blank?
   end
 
@@ -56,6 +60,7 @@ private
   end
 
   def process_create_message
+    raise if @user.nil?
     @message = Message.create(body:params[:message_body],topic_id:@topic,user_id:@user.id)
   end
 end
