@@ -41,7 +41,6 @@ module Liquefiable
 
     base::LIQUEFIABLE_METHODS.each do |method_name|
       klass.__send__(:define_method,method_name) do
-        Rails.logger.info(method_name)
         @thing.__send__(method_name)
       end
     end
