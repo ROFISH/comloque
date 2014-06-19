@@ -44,7 +44,7 @@ JAVASCRIPT
 end
 
 class ActionView::Helpers::FormBuilder
-  def bs_field(thing,main_content)
+  def bs_field(thing,main_content,large=false)
     has_errors = !object.errors[thing].blank?
 
     error_text = if has_errors
@@ -60,7 +60,7 @@ class ActionView::Helpers::FormBuilder
     divclass = "form-group"
     divclass += " has-error" if has_errors
     @template.content_tag(:div, class: divclass) do
-      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-7 col-md-5")
+      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-7 col-md-#{large ? 10 : 5}")
     end
   end
 
@@ -98,6 +98,6 @@ class ActionView::Helpers::FormBuilder
   def bs_ace_field(thing,options={})
     ace_field_html = Comloque::AceField.new(object_name,thing,@template,options).render
 
-    bs_field(thing, ace_field_html)
+    bs_field(thing, ace_field_html, true)
   end
 end
