@@ -1,3 +1,4 @@
+module Admin
 class ThemesController < ApplicationController
   def index
     @themes = Theme.all
@@ -48,4 +49,5 @@ private
   def theme_params
     params[:theme].permit(:name)
   end
+end
 end

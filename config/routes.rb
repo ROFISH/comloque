@@ -56,10 +56,10 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :forums
-  end
 
-  resources :themes do
-    resources :templates
+    resources :themes do
+      resources :templates
+    end
   end
 
   root 'forum#index'

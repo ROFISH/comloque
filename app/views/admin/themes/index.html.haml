@@ -1,0 +1,18 @@
+.page-header
+  %h1 Themes
+
+%p
+  =link_to "New Theme", new_admin_theme_path, class:"btn btn-primary"
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Actions
+  %tbody
+    -@themes.each do |theme|
+      %tr
+        %td=link_to theme.name, [:admin,theme]
+        %td
+          =link_to "Edit",[:edit,:admin,theme], class:'btn btn-sm btn-success'
+          =link_to "Destroy",[:admin,theme], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"

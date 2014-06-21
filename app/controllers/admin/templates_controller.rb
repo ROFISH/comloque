@@ -1,3 +1,4 @@
+module Admin
 class TemplatesController < ApplicationController
   before_filter :get_theme
 
@@ -50,4 +51,5 @@ private
   def template_params
     params[:template].permit(:name,:source)
   end
+end
 end
