@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140607085932) do
+ActiveRecord::Schema.define(version: 20140622214421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assets", force: true do |t|
+    t.string   "key"
+    t.string   "attachment"
+    t.string   "content_type"
+    t.integer  "size"
+    t.integer  "width"
+    t.integer  "height"
+    t.integer  "theme_id"
+    t.string   "digest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "forums", force: true do |t|
     t.string   "name"

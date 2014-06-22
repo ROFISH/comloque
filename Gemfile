@@ -44,6 +44,15 @@ gem 'liquid'
 # Use Google as a login source, at least temporarily.
 gem 'omniauth-google-oauth2'
 
+# required for carrierwave-meta and resizing images
+gem 'rmagick', :require=>"RMagick"
+
+# File attachment handler
+gem 'carrierwave'
+
+# Plugin that puts the image size, width, and height into the table.
+gem 'carrierwave-meta'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

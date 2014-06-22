@@ -16,3 +16,18 @@
         %td
           =link_to "Edit",[:edit,:admin,@theme,template], class:'btn btn-sm btn-success'
           =link_to "Destroy",[:admin,@theme,template], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"
+
+%p
+  =link_to "Write New Asset",[:new,:admin,@theme,:asset],class:'btn btn-primary'
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Actions
+  %tbody
+    -@theme.assets.each do |asset|
+      %tr
+        %td=link_to asset.key, asset.attachment.url
+        %td
+          =link_to "Edit",[:edit,:admin,@theme,asset], class:'btn btn-sm btn-success'
+          =link_to "Destroy",[:admin,@theme,asset], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"

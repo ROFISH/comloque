@@ -59,6 +59,7 @@ Rails.application.routes.draw do
 
     resources :themes do
       resources :templates
+      resources :assets
     end
   end
 
