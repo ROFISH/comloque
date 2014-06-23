@@ -22,6 +22,7 @@ class TemplatesController < ApplicationController
 
   def edit
     @template = @theme.templates.find(params[:id])
+    @page_title = "Editing #{@template.name}"
     render action:'new'
   end
 
