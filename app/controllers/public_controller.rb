@@ -2,6 +2,27 @@
 # Use concerns for samey things (login, etc.)
 
 class PublicController < ActionController::Base
+  # Filters for the Liquid template
+  module TextFilter
+    def asset_url(input)
+      return input if input[/^http/i]
+
+      theme = @context.registers[:theme]
+      return "" unless theme
+
+      asset = theme.assets.find_by_key(input)
+      return "" unless asset && asset.attachment
+
+      asset.attachment.url
+    end
+    alias_method :shopify_asset_url, :asset_url
+
+    def stylesheet_tag(input)
+      #return "" if input[/^http/i] if ONLY_LOCAL
+      %(<link href="#{input}" rel="stylesheet" type="text/css"  media="all" />)
+    end
+  end
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   #
@@ -35,10 +56,11 @@ private
     return no_template_found(options) if template.blank?
 
     compiled_liquid = Liquid::Template.parse(template.source)
+    compiled_liquid.registers[:theme] = @theme
     body = if Rails.env.development?
-      compiled_liquid.render!(public_view_assigns)
+      compiled_liquid.render!(public_view_assigns, :filters => [TextFilter])
     else
-      compiled_liquid.render(public_view_assigns)
+      compiled_liquid.render(public_view_assigns, :filters => [TextFilter])
     end
   end
 
@@ -46,10 +68,11 @@ private
     layout = @theme.templates.find_by_name("layouts/theme")
     return body if layout.blank?
     compiled_liquid = Liquid::Template.parse(layout.source)
+    compiled_liquid.registers[:theme] = @theme
     if Rails.env.development?
-      compiled_liquid.render!(layout_view_assigns(body))
+      compiled_liquid.render!(layout_view_assigns(body), :filters => [TextFilter])
     else
-      compiled_liquid.render(layout_view_assigns(body))
+      compiled_liquid.render(layout_view_assigns(body), :filters => [TextFilter])
     end
   end
 
