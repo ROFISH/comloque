@@ -3,7 +3,7 @@
 
 =form_for [:admin,@theme,@asset], remote: !@asset.new_record?, html:{class:"form-horizontal"} do |f|
   =f.bs_text_field :key
-  =f.bs_ace_field :source, style:"min-height:300px;", mode:'liquid'
+  =f.bs_ace_field :source, style:"min-height:300px;", mode:'css'
   =f.bs_submit
 
   :javascript

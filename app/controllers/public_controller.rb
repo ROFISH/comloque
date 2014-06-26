@@ -32,7 +32,7 @@ class PublicController < ActionController::Base
   before_filter :get_theme
   before_filter :get_user
   def get_theme
-    @theme = Theme.first # debug for now
+    @theme = Theme.last # debug for now
   end
 
   def get_user
@@ -85,6 +85,7 @@ private
   end
 
   def no_template_found(options)
+    self.status = 422
     "Unable to find a template for \"#{options[:template]}\" in [#{options[:prefixes].join(',')}]"
   end
 
