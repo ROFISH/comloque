@@ -60,7 +60,7 @@ class ActionView::Helpers::FormBuilder
     divclass = "form-group"
     divclass += " has-error" if has_errors
     @template.content_tag(:div, class: divclass) do
-      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-7 col-md-#{large ? 10 : 5}")
+      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-#{large ? 10 : 7} col-md-#{large ? 10 : 5}")
     end
   end
 
@@ -99,5 +99,17 @@ class ActionView::Helpers::FormBuilder
     ace_field_html = Comloque::AceField.new(object_name,thing,@template,options).render
 
     bs_field(thing, ace_field_html, true)
+  end
+
+  def bs_select(method, choices = nil, options = {}, html_options = {}, &block)
+    if html_options[:class].is_a?(Array)
+      html_options[:class] << "form-control"
+    else
+      html_options[:class] = "#{options[:class]} form-control"
+    end
+    
+    select_field_html = select(method,choices,options,html_options,&block)
+
+    bs_field(method, select_field_html)
   end
 end

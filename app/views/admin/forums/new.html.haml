@@ -4,4 +4,5 @@
 =form_for [:admin,@forum], html:{class:"form-horizontal"} do |f|
   =f.bs_text_field :name
   =f.bs_text_field :permalink
+  =f.bs_select :category_id, options_from_collection_for_select(Category.all,:id,:name)
   =f.bs_submit

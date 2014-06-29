@@ -2,7 +2,8 @@ class ForumController < PublicController
   before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic]
   before_filter :require_topic!, only:[:topic]
   def index
-    @forums = Forum.all.to_a
+    @categories = Category.includes(:forums).to_a
+    @forums = @categories.map(&:forums).flatten.compact
   end
 
   def topiclist
@@ -41,7 +42,7 @@ class ForumController < PublicController
 
 private
   def require_forum
-    @forum = Forum.find_by_permalink(params[:forum])
+    @forum = Forum.find_by_permalink_and_category_permalink(params[:forum],params[:cat])
     raise ActiveRecord::RecordNotFound if @forum.blank?
   end
 
