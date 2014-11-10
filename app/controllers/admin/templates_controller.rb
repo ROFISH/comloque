@@ -16,7 +16,7 @@ class TemplatesController < ApplicationController
     @template = Template.new(template_params)
     @template.theme = @theme
     if @template.save
-      redirect_to @theme
+      redirect_to [:admin,@theme]
     else
       render action:'new'
     end
@@ -41,7 +41,7 @@ class TemplatesController < ApplicationController
       respond_to do |format|
         format.json { render json:@template }
         format.js { head :ok }
-        format.html {redirect_to @theme}
+        format.html {redirect_to [:admin,@theme]}
       end
     else
       render action:'new'
