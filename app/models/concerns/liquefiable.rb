@@ -49,7 +49,7 @@ module Liquefiable
   end
 
   def to_liquid
-    self.class::Drop.new(self)
+    @liquid ||= self.class::Drop.new(self)
   end
 
 end

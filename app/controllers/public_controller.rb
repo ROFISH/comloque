@@ -21,6 +21,21 @@ class PublicController < ActionController::Base
       #return "" if input[/^http/i] if ONLY_LOCAL
       %(<link href="#{input}" rel="stylesheet" type="text/css"  media="all" />)
     end
+
+    def time_tag(time)
+      return "<time />" unless time.is_a?(Time)
+
+      currenttime = Time.now
+      todaytime = Time.mktime(currenttime.year,currenttime.month,currenttime.day)
+      stringoutput = if time > todaytime
+        "Today, #{time.strftime("%H:%M")}"
+      elsif time > (todaytime-86400)
+        "Yesterday, #{time.strftime("%H:%M")}"
+      else
+        time.strftime("%B #{time.day.ordinalize}, %Y %H:%M")
+      end
+      "<time class=\"changeabletime\" datetime=\"#{time.iso8601}\">#{stringoutput}</time>"
+    end
   end
 
   # Prevent CSRF attacks by raising an exception.

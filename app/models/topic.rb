@@ -3,7 +3,7 @@ class Topic < ActiveRecord::Base
   belongs_to :user
   has_many :messages
 
-  LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(name created_at).freeze
   LIQUEFIABLE_METHODS = %i(url user messages).freeze
   include Liquefiable
 

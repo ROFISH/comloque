@@ -11,5 +11,6 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery_ujs
-//= require turbolinks
+//= require jquery.liveready
+//= require jquery.timeago
+//= require changeabletime
