@@ -80,7 +80,7 @@ private
   end
 
   def render_liquid_layout(body)
-    layout = @theme.templates.find_by_name("layouts/theme")
+    layout = @theme.templates.find_by_name("layout/theme")
     return body if layout.blank?
     compiled_liquid = Liquid::Template.parse(layout.source)
     compiled_liquid.registers[:theme] = @theme
