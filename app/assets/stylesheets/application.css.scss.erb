@@ -1,0 +1,209 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+.btn-xxs, .btn-group-xxs>.btn {
+  padding: 0px 2px !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  border-radius: 2px !important;
+  vertical-align:top !important;
+  margin-left: 5px;
+}
+
+.theme_editor_ace {
+  height:400px;
+}
+
+.theme_editor_div h4 {
+  padding-bottom:5px;
+  border-bottom:1px solid #ccc;
+}
+
+.editor-group {
+  padding-left: 20px;
+  margin-bottom: 30px;
+  h5 {
+    margin-left: -20px;
+    padding-bottom:5px;
+    border-bottom:1px solid #ccc;
+  }
+  ul {
+    padding:0 0 0 10px;
+    list-style-type: square;
+  }
+}
+
+.upload_file {
+  min-height: 100px;
+  min-width: 100px;
+  background:url(<%= asset_path('dragasset@2x.png') %>) 50% 50% no-repeat;
+  background-size: 400px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  .progress {
+    position:relative;
+    top:70px;
+    left:0;
+  }
+}
+
+.image_field + .upload_file {
+  display:none;
+}
+
+.image_field {
+  position: relative;
+  text-align: center;
+  .upload_file_delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+#theme_setter {
+  #settings {
+    float:left;
+    width:350px;
+    background:#333;
+    padding: 0 20px;
+    overflow-y:auto;
+
+    header {
+      background:#444;
+      padding:10px 0;
+      position:relative;
+      margin:0 -20px;
+    }
+
+    .backbutton {
+      position: absolute;
+      top:10px;
+      left:10px;
+    }
+
+    h4 {
+      color:white;
+      margin:0;
+      text-align: center;
+      line-height: 25px;
+      height:25px;
+    }
+    h3,h5 {
+      font-size: 18px;
+      font-weight: bold;
+      color:white;
+    }
+    form {
+      padding:5px 0 0;
+      label {
+        color:white;
+        //text-shadow: 2px 2px 0px #444, 2px -2px 0px #444, -2px -2px 0px #444, -2px 2px 0px #444;
+      }
+    }
+    ul.white li, ul.white li a {
+      margin: 5px 0;
+      color:white;
+    }
+    .links {
+      padding-left:0px;
+      //margin-top:10px;
+      list-style-type: none;
+      li,p {
+        //position: relative;
+        .glyphicon-move {
+          padding-right:5px;
+        }
+      }
+
+    }
+    .link-edit {
+      padding-left:20px;
+      margin-bottom: 10px;
+      position:relative;
+      .linkinput {
+        display:block;
+        background: #fff;
+        width:100%;
+        border:0;
+        padding:4px;
+        border-left:1px solid #222;
+        border-right:1px solid #222;
+        input {
+          border:0;
+          width:100%;
+          padding: 4px 0;
+          font-size:14px;
+        }
+        select {
+          width:100%;
+          padding: 4px 0;
+          font-size:14px;
+        }
+        .upload_file {
+          margin: 0px 0;
+        }
+      }
+
+      .linkinput:first-of-type {
+        border-top:1px solid #222;
+        border-radius: 5px 5px 0 0;
+      }
+
+      .linkinput:last-of-type {
+        border-bottom:1px solid #222;
+        border-radius: 0 0 5px 5px;
+      }
+
+      .linkinput + .linkinput {
+        border-top:1px solid #222;
+      }
+    }
+  }
+  #preview {
+    float:left;
+    width:70%;
+    width:calc(100% - 350px);
+  }
+}
+
+.collection_row {
+  border-top :1px solid #eee;
+  padding:5px;
+  position:relative;
+}
+.collection_row img {
+  max-width: 32px;
+  max-height: 32px;
+}
+.collection_row .img_box {
+  display:inline-block;
+  padding:10px;
+  background:#ccc;
+  margin:0 10px 0 5px;
+}
+.collection_row i.icon-move {
+  position:relative;
+  top:2px;
+  cursor:move;
+}
+.collection_row i.icon-trash {
+  margin-top:15px;
+  position:absolute;
+  right:10px;
+}
+.collection_row .btn-mini {
+  margin:-4px 0 0 10px;
+}

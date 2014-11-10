@@ -9,13 +9,28 @@ class Admin::AssetsController < ApplicationController
     @asset = Asset.new(theme:@theme)
   end
 
+  def show
+    @asset = @theme.assets.find(params[:id])
+    respond_to do |format|
+      format.json { render json: @asset.attributes.merge(source:@asset.source) }
+    end
+  end
+
   def create
     @asset = Asset.new(asset_params)
     @asset.theme = @theme if @theme
+    @asset.set_key_to_attachment
+    Asset.where(theme_id:@theme.id,key:@asset.key).destroy_all
     if @asset.save
-      redirect_to [:admin, @theme]
+      respond_to do |format|
+        format.js   { render json:@asset.attributes.merge(public_url:@asset.public_url) }
+        format.html { redirect_to [:admin, @theme] }
+      end
     else
-      render action: :new
+      respond_to do |format|
+        format.js   { render json:@asset.errors, status: 422 }
+        format.html { render action: :new }
+      end
     end
   end
 
@@ -28,9 +43,16 @@ class Admin::AssetsController < ApplicationController
   def update
     @asset = @theme.assets.find(params[:id])
     if @asset.update_attributes(asset_params)
-      redirect_to [:admin, @theme]
+      respond_to do |format|
+        format.json { render json:@asset.attributes.merge(public_url:@asset.public_url) }
+        format.js   { render json:@asset.attributes.merge(public_url:@asset.public_url) }
+        format.html { redirect_to [:admin, @theme] }
+      end
     else
-      render action: :new
+      respond_to do |format|
+        format.js   { render json:@asset.errors, status: 422 }
+        format.html { render action: :new }
+      end
     end
   end
 
@@ -43,6 +65,6 @@ class Admin::AssetsController < ApplicationController
 private
 
   def asset_params
-    params[:asset].permit(:key,:source)
+    params[:asset].permit(:key,:source,:attachment)
   end
 end

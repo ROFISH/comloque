@@ -1,33 +1,148 @@
-.page-header
-  %h1=@theme.name
+.page-header{style:'position:relative'}
+  %h1
+    =@theme.name
+    %span{style:'font-size:33%;'}=link_to "edit page", [:edit,:admin,@theme]
 
-%p
-  =link_to "New Template",[:new,:admin,@theme,:template],class:'btn btn-primary'
+  .relative
+    .alert.alert-success#success{style:'position:absolute;top:0px;left:350px;width:500px;display:none;'}
+      %p Successfully Updated
 
-%table.table.table-striped
-  %thead
-    %tr
-      %th Name
-      %th Actions
-  %tbody
-    -@theme.templates.each do |template|
-      %tr
-        %td=template.name
-        %td
-          =link_to "Edit",[:edit,:admin,@theme,template], class:'btn btn-sm btn-success'
-          =link_to "Destroy",[:admin,@theme,template], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"
+.row
+  .col-sm-3
+    .editor-group
+      %h5
+        %span.glyphicon.glyphicon-folder-open
+        &nbsp;Layouts
+      %ul
+        -@theme.templates.where("name ILIKE 'layout/%'").each do |template|
+          %li
+            =link_to template.name[7..1000],[:admin,@theme,template], 'data-edit-kind'=>'template'
+            =link_to [:admin,@theme,template], method: 'delete', data: {confirm: 'Are you sure?'} do
+              %span.btn.btn-danger.btn-xxs{style:'font-size:80%;'} &times;
+      %p=link_to "New Layout", "#", 'data-toggle'=>"modal",'data-target'=>"#new-layout", 'class'=>'btn btn-xs btn-primary'
+    .editor-group
+      %h5
+        %span.glyphicon.glyphicon-folder-open
+        &nbsp;Templates
+      %ul
+        -@theme.templates.where("name NOT ILIKE 'layout/%' AND name NOT ILIKE 'snippet/%'").each do |template|
+          %li
+            =link_to template.name,[:admin,@theme,template], 'data-edit-kind'=>'template'
+            =link_to [:admin,@theme,template], method: 'delete', data: {confirm: 'Are you sure?'} do
+              %span.btn.btn-danger.btn-xxs{style:'font-size:80%;'} &times;
+      %p=link_to "New Template", "#", 'data-toggle'=>"modal",'data-target'=>"#new-template", 'class'=>'btn btn-xs btn-primary'
+    .editor-group
+      %h5
+        %span.glyphicon.glyphicon-folder-open
+        &nbsp;Snippets
+      %ul
+        -@theme.templates.where("name ILIKE 'snippet/%'").each do |template|
+          %li
+            =link_to template.name[8..1000],[:admin,@theme,template], 'data-edit-kind'=>'template'
+            =link_to [:admin,@theme,template], method: 'delete', data: {confirm: 'Are you sure?'} do
+              %span.btn.btn-danger.btn-xxs{style:'font-size:80%;'} &times;
+      %p=link_to "New Snippet", "#", 'data-toggle'=>"modal",'data-target'=>"#new-snippet", 'class'=>'btn btn-xs btn-primary'
+    .editor-group
+      %h5
+        %span.glyphicon.glyphicon-folder-open
+        &nbsp;Assets
+      .upload_file{data:{'upload-url'=>url_for([:admin,@theme,Asset.new]),'upload-file-param'=>'asset[attachment]','upload-action'=>'refresh'}}
+      %ul
+        -@theme.assets.order(:key).each do |asset|
+          %li
+            -if asset.css?
+              =link_to asset.key, [:admin,@theme,asset], 'data-edit-kind'=>'asset'
+            -else
+              =link_to asset.key, asset.public_url
+            =link_to [:admin,@theme,asset], method: 'delete', data: {confirm: 'Are you sure?'} do
+              %span.btn.btn-danger.btn-xxs{style:'font-size:80%;'} &times;
+    -#.editor-group
+      %h5
+        %span.glyphicon.glyphicon-folder-open
+        &nbsp;Settings
+      %ul
+        -@theme.theme_settings.each do |setting|
+          %li
+            =setting.name
+            -#=link_to template.name,[:admin,@theme,template], 'data-edit-kind'=>'template'
+            -#=link_to [:admin,@theme,template], method: 'delete', data: {confirm: 'Are you sure?'} do
+              %span.glyphicon.glyphicon-trash.btn.btn-danger.btn-xxs{style:'font-size:80%;'}
+      %p=link_to "New Setting", "#", 'data-toggle'=>"modal",'data-target'=>"#new-setting", 'class'=>'btn btn-xs btn-primary'
+  .col-sm-9
+    =form_for :stuff, html:{id:'theme_editor_form'} do |f|
+      .theme_editor_div{style:'display:none'}
+        %h4 Filename
+        =f.bs_ace :item, class:"theme_editor_ace"
+      #nothing_selected
+        %h3
+          %span.glyphicon.glyphicon-chevron-left
+          Select a thing to edit!
 
-%p
-  =link_to "Write New Asset",[:new,:admin,@theme,:asset],class:'btn btn-primary'
-%table.table.table-striped
-  %thead
-    %tr
-      %th Name
-      %th Actions
-  %tbody
-    -@theme.assets.each do |asset|
-      %tr
-        %td=link_to asset.key, asset.attachment.url
-        %td
-          =link_to "Edit",[:edit,:admin,@theme,asset], class:'btn btn-sm btn-success'
-          =link_to "Destroy",[:admin,@theme,asset], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"
+.modal.fade#new-layout{'tabindex'=>"-1",'role'=>"dialog"}
+  .modal-dialog
+    .modal-content
+      =form_for [:admin,@theme,@theme.templates.new], html:{class:'form-inline'} do |f|
+        .modal-header
+          %button.close{type:'button',data:{dismiss:'modal'}} &times;
+          %h4.modal-title Create Layout
+        .modal-body.text-center
+          .form-group
+            =f.label :name, "Create a new layout called:"
+            =f.text_field :name
+            =f.hidden_field :is_layout, value:'true'
+        .modal-footer
+          %button.btn.btn-default{data:{dismiss:'modal'}} Cancel
+          %button.btn.btn-primary Create
+
+.modal.fade#new-template{'tabindex'=>"-1",'role'=>"dialog"}
+  .modal-dialog
+    .modal-content
+      =form_for [:admin,@theme,@theme.templates.new], html:{class:'form-inline'} do |f|
+        .modal-header
+          %button.close{type:'button',data:{dismiss:'modal'}} &times;
+          %h4.modal-title Create Template
+        .modal-body.text-center
+          .form-group
+            =f.label :name, "Create a new template for:"
+            =f.select :name, ['forum/index','forum/topiclist','forum/topic','forum/newtopic']
+            =f.label :name, "called:"
+            =f.text_field :altname
+          %p.help-block Leave the name blank for the default template.
+
+        .modal-footer
+          %button.btn.btn-default{data:{dismiss:'modal'}} Cancel
+          %button.btn.btn-primary Create
+
+-#.modal.fade#new-setting{'tabindex'=>"-1",'role'=>"dialog"}
+  .modal-dialog
+    .modal-content
+      =form_for [:admin,@theme,@theme.theme_settings.new], html:{class:'form-inline'} do |f|
+        .modal-header
+          %button.close{type:'button',data:{dismiss:'modal'}} &times;
+          %h4.modal-title Create Setting
+        .modal-body.text-center
+          .form-group
+            =f.label :kind, "Create a new"
+            =f.select :kind, ['string','color','file']
+            =f.label :name, "setting called:"
+            =f.text_field :name
+
+        .modal-footer
+          %button.btn.btn-default{data:{dismiss:'modal'}} Cancel
+          %button.btn.btn-primary Create
+
+.modal.fade#new-snippet{'tabindex'=>"-1",'role'=>"dialog"}
+  .modal-dialog
+    .modal-content
+      =form_for [:admin,@theme,@theme.templates.new], html:{class:'form-inline'} do |f|
+        .modal-header
+          %button.close{type:'button',data:{dismiss:'modal'}} &times;
+          %h4.modal-title Create Layout
+        .modal-body.text-center
+          .form-group
+            =f.label :name, "Create a new snippet called:"
+            =f.text_field :name
+            =f.hidden_field :is_snippet, value:'true'
+        .modal-footer
+          %button.btn.btn-default{data:{dismiss:'modal'}} Cancel
+          %button.btn.btn-primary Create

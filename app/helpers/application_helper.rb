@@ -95,6 +95,10 @@ class ActionView::Helpers::FormBuilder
     end
   end
 
+  def bs_ace(thing,options={})
+    Comloque::AceField.new(object_name,thing,@template,options).render
+  end
+
   def bs_ace_field(thing,options={})
     ace_field_html = Comloque::AceField.new(object_name,thing,@template,options).render
 

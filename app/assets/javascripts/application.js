@@ -13,3 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require template_editor
+//= require drag_drop_field

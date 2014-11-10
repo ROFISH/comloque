@@ -9,6 +9,14 @@ class AssetUploader < CarrierWave::Uploader::Base
   # Choose what kind of storage to use for this uploader:
   if ENV["AWS_ACCESS_KEY_ID"] && ENV["AWS_SECRET_ACCESS_KEY"]
     storage :fog
+
+    def self.fog_public
+      true
+    end
+
+    def fog_public
+      true
+    end
   else
     storage :file
   end
@@ -27,8 +35,10 @@ class AssetUploader < CarrierWave::Uploader::Base
 
   def filename
     if model.css?
-      thefilename = model.key.split(".css").first
-      "#{thefilename}-#{model.digest}.css"
+      splitted = model.key.split(".")
+      ext = splitted.pop
+      thefilename = splitted.join(".")
+      "#{thefilename}-#{model.digest}.#{ext}"
     else
       original_filename
     end
@@ -36,32 +46,42 @@ class AssetUploader < CarrierWave::Uploader::Base
 
   process :store_meta
 
-  # Create different versions of your uploaded files:
-  # Duplicate Shopify's image sizes.
-  # version :pico do
-  #   process :resize_to_fit => [16, 16]
-  # end
-  # version :icon do
-  #   process :resize_to_fit => [32, 32]
-  # end
-  # version :thumb do
-  #   process :resize_to_fit => [50, 50]
-  # end
-  # version :small do
-  #   process :resize_to_fit => [100, 100]
-  # end
-  # version :compact do
-  #   process :resize_to_fit => [160, 160]
-  # end
-  # version :medium do
-  #   process :resize_to_fit => [240, 240]
-  # end
-  # version :large do
-  #   process :resize_to_fit => [480, 480]
-  # end
-  # version :grande do
-  #   process :resize_to_fit => [600, 600]
-  # end
+  def is_image?(picture)
+    return false if model.content_type == 'image/svg+xml' #don't process svg files, they don't actually have a size
+    return false if model.content_type == 'image/vnd.microsoft.icon' #don't process .ico files, they're not supported
+    model.content_type =~ /\Aimage\//
+  end
+
+  def is_not_ttf?(picture)
+    !(picture.original_filename =~ /\.ttf\z/)
+  end
+
+  process :store_meta, :if => :is_not_ttf?
+
+  version :pico, :if => :is_image? do
+    process :resize_to_limit => [16, 16]
+  end
+  version :icon, :if => :is_image? do
+    process :resize_to_limit => [32, 32]
+  end
+  version :thumb, :if => :is_image? do
+    process :resize_to_limit => [50, 50]
+  end
+  version :small, :if => :is_image? do
+    process :resize_to_limit => [100, 100]
+  end
+  version :compact, :if => :is_image? do
+    process :resize_to_limit => [160, 160]
+  end
+  version :medium, :if => :is_image? do
+    process :resize_to_limit => [240, 240]
+  end
+  version :large, :if => :is_image? do
+    process :resize_to_limit => [480, 480]
+  end
+  version :grande, :if => :is_image? do
+    process :resize_to_limit => [600, 600]
+  end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url
