@@ -1,5 +1,5 @@
 class Topic < ActiveRecord::Base
-  belongs_to :forum
+  belongs_to :forum, inverse_of: :topics
   belongs_to :user
   has_many :messages
 

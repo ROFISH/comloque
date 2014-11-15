@@ -1,5 +1,5 @@
 class Forum < ActiveRecord::Base
-  has_many :topics, ->{order({:id=>:desc})}
+  has_many :topics, ->{order({:id=>:desc})}, inverse_of: :forum
 
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
   LIQUEFIABLE_METHODS = %i(url topics).freeze
