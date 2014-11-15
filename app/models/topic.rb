@@ -13,6 +13,6 @@ class Topic < ActiveRecord::Base
   include Permalinkable
 
   def url
-    "/forum/todo_category/#{forum.permalink}/#{permalink}"
+    "/forum/#{forum.category_permalink}/#{forum.permalink}/#{permalink}"
   end
 end
