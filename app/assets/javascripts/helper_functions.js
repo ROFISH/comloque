@@ -14,3 +14,4 @@
 //= require jquery.liveready
 //= require jquery.timeago
 //= require changeabletime
+//= require form_links

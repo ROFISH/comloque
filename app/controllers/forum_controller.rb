@@ -1,6 +1,7 @@
 class ForumController < PublicController
-  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic]
-  before_filter :require_topic!, only:[:topic]
+  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_message,:update_message,:delete_message]
+  before_filter :require_topic!, only:[:topic,:edit_message,:update_message,:delete_message]
+  before_filter :require_message!, only:[:edit_message,:update_message,:delete_message]
   def index
     @categories = Category.includes(:forums).to_a
     @forums = @categories.map(&:forums).flatten.compact
@@ -14,6 +15,21 @@ class ForumController < PublicController
   end
 
   def topic
+  end
+
+  def edit_message
+  end
+
+  def update_message
+    updated_attrs = {}
+    updated_attrs[:body] =  params[:message_body] if params[:message_body]
+    @message.update(updated_attrs)
+    redirect_to action: :topic, topic: @topic.permalink, anchor:"message#{@message.id}"
+  end
+
+  def delete_message
+    @message.destroy
+    redirect_to action: :topic, topic: @topic.permalink
   end
 
   before_filter :require_topic, only:[:create_message]
@@ -53,6 +69,16 @@ private
   def require_topic!
     require_topic
     raise ActiveRecord::RecordNotFound if @topic.blank?
+  end
+
+  def require_message
+    require_topic!
+    @message = @topic.messages.find(params[:message])
+  end
+
+  def require_message!
+    require_message
+    raise ActiveRecord::RecordNotFound if @message.blank?
   end
 
   def process_create_topic
