@@ -75,6 +75,8 @@ Rails.application.routes.draw do
   get '/forum/:cat/:forum/:topic/:message/edit' => 'forum#edit_message'
   post '/forum/:cat/:forum/:topic/:message/edit' => 'forum#update_message'
 
-  get '/auth/google_oauth2/callback' => 'forum#login'
-  get '/logout' => 'forum#logout'
+  get '/auth/google_oauth2/callback' => 'login#login'
+  get '/register' => 'login#register'
+  post '/register' => 'login#do_register'
+  get '/logout' => 'login#logout'
 end
