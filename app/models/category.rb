@@ -2,10 +2,6 @@ class Category < ActiveRecord::Base
   has_many :forums
   has_many :public_forums, ->{ where(privacy:'public') }, class_name: :Forum
 
-  LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
-  LIQUEFIABLE_METHODS = {url: :url, forums: :public_forums}.freeze
-  include Liquefiable
-
   include Permalinkable
 
   after_save :set_forum_cat_permalink, if:->(x){x.permalink_changed?}

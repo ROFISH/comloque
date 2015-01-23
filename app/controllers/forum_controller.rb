@@ -1,10 +1,36 @@
 class ForumController < PublicController
+
+  # I'm not sure if this is the best place to put this? This is a very specific Drop for this controller
+  class CategoryDrop < Liquid::Drop
+    def initialize(category,forums)
+      @category = category
+      @forums = forums
+    end
+
+    def name
+      @category.attributes['name']
+    end
+
+    def url
+      @category.url
+    end
+
+    def forums
+      @forums
+    end
+  end
+
   before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_message,:update_message,:delete_message]
   before_filter :require_topic!, only:[:topic,:edit_message,:update_message,:delete_message]
   before_filter :require_message!, only:[:edit_message,:update_message,:delete_message]
+
   def index
-    @categories = Category.includes(:forums).to_a
-    @forums = @categories.map(&:forums).flatten.compact
+    @forums = Forum.public_scope(@user).includes(:category)
+    # this is a really complex way to get the forums in a category but it ensures two things
+    # 1) user sees only forums the user is allowed to see
+    # 2) user sess only categories containing forums the user is allowed to see
+    categories = @forums.map{|x| x.category}.uniq
+    @categories = categories.map{|cat| CategoryDrop.new(cat,@forums.select{|f| f.category_id == cat.id})}
   end
 
   def topiclist

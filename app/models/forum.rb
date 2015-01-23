@@ -1,4 +1,5 @@
 class Forum < ActiveRecord::Base
+  belongs_to :category
   has_many :topics, ->{order({:id=>:desc})}, inverse_of: :forum
 
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
@@ -8,6 +9,16 @@ class Forum < ActiveRecord::Base
   include Permalinkable
 
   before_save :update_category_permalink, unless:->(x){x.category_id.blank?}
+
+  class << self
+    def public_scope(user)
+      if user.try(:is_admin?)
+        Forum.all
+      else
+        Forum.where(privacy:'public')
+      end
+    end
+  end
 
   def url
     "/forum/#{category_permalink}/#{permalink}"
