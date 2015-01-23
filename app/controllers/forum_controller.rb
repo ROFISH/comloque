@@ -73,6 +73,6 @@ private
 
   def process_create_message
     raise if @user.nil?
-    @message = Message.create(body:params[:message_body],topic_id:@topic,user_id:@user.id)
+    @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
   end
 end
