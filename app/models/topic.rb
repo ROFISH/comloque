@@ -4,7 +4,7 @@ class Topic < ActiveRecord::Base
   has_many :messages
 
   LIQUEFIABLE_ATTRIBUTES = %i(name created_at).freeze
-  LIQUEFIABLE_METHODS = %i(url user messages).freeze
+  LIQUEFIABLE_METHODS = {url: :url, user: :user, messages: :messages}.freeze
   include Liquefiable
 
   # this before needs to be before the Permalinkable include

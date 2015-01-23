@@ -5,4 +5,5 @@
   =f.bs_text_field :name
   =f.bs_text_field :permalink
   =f.bs_select :category_id, options_from_collection_for_select(Category.all,:id,:name)
+  =f.bs_collection_radio_buttons :privacy, [["public","Public: Visible to anyone."],["unlisted","Unlisted: Visible to anyone with the link.<br/><small>Always visible to admins and mods of this forum.</small>".html_safe]], :first, :last
   =f.bs_submit

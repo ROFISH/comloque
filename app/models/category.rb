@@ -1,8 +1,9 @@
 class Category < ActiveRecord::Base
   has_many :forums
+  has_many :public_forums, ->{ where(privacy:'public') }, class_name: :Forum
 
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
-  LIQUEFIABLE_METHODS = %i(url forums).freeze
+  LIQUEFIABLE_METHODS = {url: :url, forums: :public_forums}.freeze
   include Liquefiable
 
   include Permalinkable

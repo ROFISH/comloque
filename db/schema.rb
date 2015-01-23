@@ -11,83 +11,84 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140626205331) do
+ActiveRecord::Schema.define(version: 20150123065542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "assets", force: true do |t|
-    t.string   "key"
-    t.string   "attachment"
-    t.string   "content_type"
+  create_table "assets", force: :cascade do |t|
+    t.string   "key",          limit: 255
+    t.string   "attachment",   limit: 255
+    t.string   "content_type", limit: 255
     t.integer  "size"
     t.integer  "width"
     t.integer  "height"
     t.integer  "theme_id"
-    t.string   "digest"
+    t.string   "digest",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "categories", force: true do |t|
-    t.string   "name"
-    t.string   "permalink"
+  create_table "categories", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "permalink",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "forums", force: true do |t|
-    t.string   "name"
+  create_table "forums", force: :cascade do |t|
+    t.string   "name",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "permalink"
+    t.string   "permalink",          limit: 255
     t.integer  "category_id"
-    t.string   "category_permalink"
+    t.string   "category_permalink", limit: 255
+    t.string   "privacy",                        default: "public", null: false
   end
 
-  create_table "messages", force: true do |t|
-    t.string   "topic_id"
+  create_table "messages", force: :cascade do |t|
+    t.string   "topic_id",   limit: 255
     t.text     "body"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "permalinks", force: true do |t|
-    t.string   "name"
+  create_table "permalinks", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.integer  "thang_id"
-    t.string   "thang_type"
+    t.string   "thang_type", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "scope_id"
   end
 
-  create_table "templates", force: true do |t|
-    t.string   "name"
+  create_table "templates", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.text     "source"
     t.integer  "theme_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "themes", force: true do |t|
-    t.string   "name"
+  create_table "themes", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "topics", force: true do |t|
-    t.string   "name"
+  create_table "topics", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.integer  "forum_id"
     t.integer  "user_id"
-    t.string   "permalink"
+    t.string   "permalink",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "name"
-    t.string   "email"
+  create_table "users", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "email",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -3,7 +3,7 @@ class Message < ActiveRecord::Base
   belongs_to :topic
 
   LIQUEFIABLE_ATTRIBUTES = %i(id body).freeze
-  LIQUEFIABLE_METHODS = %i(user created_at updated_at url).freeze
+  LIQUEFIABLE_METHODS = {user: :user, created_at: :created_at, updated_at: :updated_at, url: :url}.freeze
   include Liquefiable
 
   def url

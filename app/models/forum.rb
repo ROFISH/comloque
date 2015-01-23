@@ -2,7 +2,7 @@ class Forum < ActiveRecord::Base
   has_many :topics, ->{order({:id=>:desc})}, inverse_of: :forum
 
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
-  LIQUEFIABLE_METHODS = %i(url topics).freeze
+  LIQUEFIABLE_METHODS = {url: :url, topics: :topics}.freeze
   include Liquefiable
 
   include Permalinkable

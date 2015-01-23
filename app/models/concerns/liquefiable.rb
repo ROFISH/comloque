@@ -39,9 +39,9 @@ module Liquefiable
       end
     end
 
-    base::LIQUEFIABLE_METHODS.each do |method_name|
-      klass.__send__(:define_method,method_name) do
-        @thing.__send__(method_name)
+    base::LIQUEFIABLE_METHODS.each do |public_method, private_method|
+      klass.__send__(:define_method,public_method) do
+        @thing.__send__(private_method)
       end
     end
 

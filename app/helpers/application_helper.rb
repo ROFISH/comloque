@@ -116,4 +116,20 @@ class ActionView::Helpers::FormBuilder
 
     bs_field(method, select_field_html)
   end
+
+  def bs_collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
+    if html_options[:class].is_a?(Array)
+      html_options[:class] << "form-control"
+    else
+      html_options[:class] = "#{options[:class]} form-control"
+    end
+
+    collection_html = collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}) do |b|
+      @template.content_tag(:div, class: "radio") do
+        b.label { b.radio_button + b.text }
+      end
+    end
+
+    bs_field(method, collection_html)
+  end
 end
