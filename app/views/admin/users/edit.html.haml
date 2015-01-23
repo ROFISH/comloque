@@ -1,0 +1,7 @@
+.page-header
+  %h1 Editing #{@user.name}
+
+=form_for [:admin,@user], html:{class:"form-horizontal"} do |f|
+  =f.bs_text_field :name
+  =f.bs_collection_radio_buttons :superuser, [[nil,"Member: Just a normal user."],["administrator","Administrator: Access to view and edit all forums; can use the admin panel."]], :first, :last
+  =f.bs_submit

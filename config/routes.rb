@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :admin do
+  get 'users/index'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -57,6 +61,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :forums
     resources :categories
+    resources :users
 
     resources :themes do
       resources :templates
