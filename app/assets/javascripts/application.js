@@ -15,3 +15,4 @@
 //#turbolinks // disable turbolinks for now
 //= require template_editor
 //= require drag_drop_field
+//= require select2_finders

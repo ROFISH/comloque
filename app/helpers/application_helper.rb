@@ -72,7 +72,7 @@ class ActionView::Helpers::FormBuilder
       options[:class] = "#{options[:class]} form-control"
     end
 
-    bs_field(thing, text_field(thing,options))
+    bs_field(thing, text_field(thing,options),options)
   end
 
   def bs_file_field(thing,options={})

@@ -61,7 +61,12 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :forums
     resources :categories
-    resources :users
+
+    resources :users do
+      collection do
+        get 'search'
+      end
+    end
 
     resources :themes do
       resources :templates

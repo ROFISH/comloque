@@ -18,8 +18,9 @@ class Topic < ActiveRecord::Base
   end
 
   def can_reply?(user)
-    return false if user.nil?         # unregistered anonymous folk not allowed to reply
-    return true if user.is_admin?     # admins are always allowed to reply
-    return forum.allow_create_message # otherwise, use the forum's setting
+    return false if user.nil?                     # unregistered anonymous folk not allowed to reply
+    return true if user.is_admin?                 # admins are always allowed to reply
+    return true if user.is_mod_of? self.forum_id  # mods of this forum are always allowed to reply
+    return forum.allow_create_message             # otherwise, use the forum's setting
   end
 end

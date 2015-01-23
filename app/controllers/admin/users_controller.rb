@@ -16,6 +16,20 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def search
+    #raise unless request.xhr?
+    q = params[:q]
+    q = q['term'] if q.is_a?(Hash)
+    query = "%#{q.gsub("%","\\%")}%"
+    thing = User.where("name ILIKE ?",query)
+    count = thing.count
+    page = params[:page].to_i
+    page = 1 if page.blank? || page < 1
+    results = thing.select([:id,:name]).order(:id).limit(10).offset(10*(page-1)).map{|x| [x.id,x.name]}
+
+    render json:{count:count,results:results}
+  end
+
 private
 
   def user_params

@@ -52,7 +52,8 @@ class PublicController < ActionController::Base
 
   def get_user
     if session[:user_id].is_a?(Integer)
-      @user = User.find(session[:user_id])
+      # we are including moderatorships here because it's used often in permission checking
+      @user = User.includes(:moderatorships).find(session[:user_id])
     end
   end
 
