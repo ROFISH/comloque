@@ -28,7 +28,7 @@ class ForumController < PublicController
     @forums = Forum.public_scope(@user).includes(:category)
     # this is a really complex way to get the forums in a category but it ensures two things
     # 1) user sees only forums the user is allowed to see
-    # 2) user sess only categories containing forums the user is allowed to see
+    # 2) user sees only categories containing forums the user is allowed to see
     categories = @forums.map{|x| x.category}.uniq
     @categories = categories.map{|cat| CategoryDrop.new(cat,@forums.select{|f| f.category_id == cat.id})}
   end
