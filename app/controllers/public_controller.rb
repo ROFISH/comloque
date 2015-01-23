@@ -72,6 +72,7 @@ private
 
     compiled_liquid = Liquid::Template.parse(template.source)
     compiled_liquid.registers[:theme] = @theme
+    compiled_liquid.registers[:user] = @user
     body = if Rails.env.development?
       compiled_liquid.render!(public_view_assigns, :filters => [TextFilter])
     else
@@ -84,6 +85,7 @@ private
     return body if layout.blank?
     compiled_liquid = Liquid::Template.parse(layout.source)
     compiled_liquid.registers[:theme] = @theme
+    compiled_liquid.registers[:user] = @user
     if Rails.env.development?
       compiled_liquid.render!(layout_view_assigns(body), :filters => [TextFilter])
     else

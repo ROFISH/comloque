@@ -4,6 +4,7 @@ class Forum < ActiveRecord::Base
 
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
   LIQUEFIABLE_METHODS = {url: :url, topics: :topics}.freeze
+  LIQUEFIABLE_USER_METHODS = {can_create_topic?: :can_create_topic?}.freeze
   include Liquefiable
 
   include Permalinkable
@@ -22,6 +23,12 @@ class Forum < ActiveRecord::Base
 
   def url
     "/forum/#{category_permalink}/#{permalink}"
+  end
+
+  def can_create_topic?(user)
+    return false if user.nil?     # unregistered anonymous folk not allowed to create topics
+    return true if user.is_admin? # admins are always allowed to create topics
+    return allow_create_topic     # otherwise, use the forum's setting
   end
 
   def update_category_permalink

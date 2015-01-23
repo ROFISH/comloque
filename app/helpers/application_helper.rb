@@ -44,7 +44,8 @@ JAVASCRIPT
 end
 
 class ActionView::Helpers::FormBuilder
-  def bs_field(thing,main_content,large=false)
+  def bs_field(thing,main_content,*args)
+    options = args.extract_options!
     has_errors = !object.errors[thing].blank?
 
     error_text = if has_errors
@@ -60,7 +61,7 @@ class ActionView::Helpers::FormBuilder
     divclass = "form-group"
     divclass += " has-error" if has_errors
     @template.content_tag(:div, class: divclass) do
-      (label thing, class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-#{large ? 10 : 7} col-md-#{large ? 10 : 5}")
+      (label thing, options[:label_name], class:"col-sm-2 control-label") + @template.content_tag(:div, main_content+error_text, class: "col-sm-#{options[:large] ? 10 : 7} col-md-#{options[:large] ? 10 : 5}")
     end
   end
 
@@ -102,7 +103,7 @@ class ActionView::Helpers::FormBuilder
   def bs_ace_field(thing,options={})
     ace_field_html = Comloque::AceField.new(object_name,thing,@template,options).render
 
-    bs_field(thing, ace_field_html, true)
+    bs_field(thing, ace_field_html, options.merge(large:true))
   end
 
   def bs_select(method, choices = nil, options = {}, html_options = {}, &block)
@@ -118,18 +119,12 @@ class ActionView::Helpers::FormBuilder
   end
 
   def bs_collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
-    if html_options[:class].is_a?(Array)
-      html_options[:class] << "form-control"
-    else
-      html_options[:class] = "#{options[:class]} form-control"
-    end
-
-    collection_html = collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}) do |b|
+    collection_html = collection_radio_buttons(method, collection, value_method, text_method, options, html_options) do |b|
       @template.content_tag(:div, class: "radio") do
         b.label { b.radio_button + b.text }
       end
     end
 
-    bs_field(method, collection_html)
+    bs_field(method, collection_html, options)
   end
 end

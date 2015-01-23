@@ -93,12 +93,12 @@ private
   end
 
   def process_create_topic
-    raise if @user.nil?
+    raise if !@forum.can_create_topic?(@user)
     @topic = Topic.create(name:params[:topic_name],forum_id:@forum.id,user_id:@user.id)
   end
 
   def process_create_message
-    raise if @user.nil?
+    raise if !@topic.can_reply?(@user)
     @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
   end
 end

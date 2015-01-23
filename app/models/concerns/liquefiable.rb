@@ -37,13 +37,19 @@ module Liquefiable
       klass.__send__(:define_method,attr_name) do
         @thing.attributes[attr_name.to_s]
       end
-    end
+    end if defined? base::LIQUEFIABLE_ATTRIBUTES
 
     base::LIQUEFIABLE_METHODS.each do |public_method, private_method|
       klass.__send__(:define_method,public_method) do
         @thing.__send__(private_method)
       end
-    end
+    end if defined? base::LIQUEFIABLE_METHODS
+
+    base::LIQUEFIABLE_USER_METHODS.each do |public_method, private_method|
+      klass.__send__(:define_method,public_method) do
+        @thing.__send__(private_method,@context.registers[:user])
+      end
+    end if defined? base::LIQUEFIABLE_USER_METHODS
 
     base.const_set(:Drop,klass)
   end

@@ -6,4 +6,6 @@
   =f.bs_text_field :permalink
   =f.bs_select :category_id, options_from_collection_for_select(Category.all,:id,:name)
   =f.bs_collection_radio_buttons :privacy, [["public","Public: Visible to anyone."],["unlisted","Unlisted: Visible to anyone with the link.<br/><small>Always visible to admins and mods of this forum.</small>".html_safe]], :first, :last
+  =f.bs_collection_radio_buttons :allow_create_topic, [[true, "All registered users can create topics."],[false,"Only Mods and Admins can create topics.".html_safe]], :first, :last, {label_name: "Who Can Create&nbsp;Topics?".html_safe}
+  =f.bs_collection_radio_buttons :allow_create_message, [[true, "All registered users can reply."],[false,"Only Mods and Admins can reply.".html_safe]], :first, :last, {label_name: "Who Can Reply?".html_safe}
   =f.bs_submit
