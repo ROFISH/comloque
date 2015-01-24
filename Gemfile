@@ -51,7 +51,7 @@ gem 'carrierwave'
 gem 'carrierwave-meta'
 
 # Fog uploads to AWS S3
-gem 'fog-aws', group: :production
+gem 'fog', group: :production
 
 # for Heroku
 gem 'rails_12factor', group: :production
