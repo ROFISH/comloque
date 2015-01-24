@@ -17,7 +17,7 @@ class Forum < ActiveRecord::Base
     def public_scope(user)
       if user.try(:is_admin?)
         Forum.all
-      elsif user.try(:moderatorships).try(:length) > 0
+      elsif user.try(:moderatorships).try(:length).try(:>,0)
         arel = Forum.arel_table[:privacy].eq('public').or(Forum.arel_table[:id].in(user.moderatorships.map(&:forum_id)))
         Forum.where(arel)
       else
