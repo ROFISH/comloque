@@ -50,6 +50,8 @@ class Asset < ActiveRecord::Base
   def update_content_type
     if self.attachment.filename =~ /\.ttf\z/
       self.content_type = "application/octet-stream"
+    elsif self.attachment.filename =~ /\.otf\z/
+      self.content_type = "application/octet-stream"
     else
       raise self.content_type.inspect
       self.content_type = "text/#{key.split(".").last}"
@@ -57,7 +59,7 @@ class Asset < ActiveRecord::Base
   end
 
   def update_md5
-    self.digest = Digest::MD5.hexdigest(@source)
+    self.digest = Digest::MD5.hexdigest(source)
   end
 
   module LiquidFilter

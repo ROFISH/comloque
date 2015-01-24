@@ -6,6 +6,10 @@ class AssetUploader < CarrierWave::Uploader::Base
   include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
+  # Include the Sprockets helpers for Rails 3.1+ asset pipeline compatibility:
+  # include Sprockets::Helpers::RailsHelper
+  # include Sprockets::Helpers::IsolatedHelper
+
   # Choose what kind of storage to use for this uploader:
   if ENV["AWS_ACCESS_KEY_ID"] && ENV["AWS_SECRET_ACCESS_KEY"]
     storage :fog
@@ -20,6 +24,7 @@ class AssetUploader < CarrierWave::Uploader::Base
   else
     storage :file
   end
+  # storage :fog
 
   include CarrierWave::Meta
 
@@ -44,8 +49,6 @@ class AssetUploader < CarrierWave::Uploader::Base
     end
   end
 
-  process :store_meta
-
   def is_image?(picture)
     return false if model.content_type == 'image/svg+xml' #don't process svg files, they don't actually have a size
     return false if model.content_type == 'image/vnd.microsoft.icon' #don't process .ico files, they're not supported
@@ -53,7 +56,7 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def is_not_ttf?(picture)
-    !(picture.original_filename =~ /\.ttf\z/)
+    !(picture.original_filename =~ /\.ttf\z/) && !(picture.original_filename =~ /\.otf\z/)
   end
 
   process :store_meta, :if => :is_not_ttf?
