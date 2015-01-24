@@ -53,6 +53,9 @@ gem 'carrierwave-meta'
 # Fog uploads to AWS S3
 gem 'fog-aws', group: :production
 
+# for Heroku
+gem 'rails_12factor', group: :production
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
