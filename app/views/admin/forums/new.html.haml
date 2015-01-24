@@ -1,5 +1,9 @@
 .page-header
-  %h1 New Forum
+  %h1
+    -if @forum.new_record?
+      New Forum
+    -else
+      Editing #{@forum.name}
 
 =form_for [:admin,@forum], html:{class:"form-horizontal"} do |f|
   =f.bs_text_field :name
