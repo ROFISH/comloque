@@ -38,6 +38,9 @@ gem 'haml'
 # Liquid is used for the public rendering engine.
 gem 'liquid'
 
+# A very good HTML/CSS Sanitizer
+gem 'sanitize'
+
 # Use Google as a login source, at least temporarily.
 gem 'omniauth-google-oauth2'
 
