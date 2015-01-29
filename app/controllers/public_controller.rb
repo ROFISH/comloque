@@ -41,8 +41,7 @@ class PublicController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   #
-  # Note that for a Liquid-based theme system, it's pretty far to actually do this aside from regexp the output
-  # protect_from_forgery with: :exception
+  protect_from_forgery with: :exception
 
   before_filter :get_theme
   before_filter :get_user
@@ -57,13 +56,17 @@ class PublicController < ActionController::Base
     end
   end
 
+  BODY_TRANSFORMS = [:add_authenticity_token].freeze
+
   # Hard overwrite the rendering system to render the templates
   def render_to_body(options)
     # render text:"blah", layout:false
     return options[:text] if !options[:text].blank? && !options[:layout]
 
     body = render_liquid_body(options)
-    render_liquid_layout(body)
+    layout = render_liquid_layout(body)
+    BODY_TRANSFORMS.each{|method| __send__(method,layout)}
+    layout
   end
 
 private
@@ -113,7 +116,15 @@ private
     view_assigns.reject{|k,v| COMLOQUE_PROTECTED_IVARS.include?(k)}
   end
 
+  def csrf_meta_tags
+    "<meta name=\"csrf-param\" content=\"#{request_forgery_protection_token.to_s}\">\n<meta name=\"csrf-token\" content=\"#{form_authenticity_token.to_s}\">"
+  end
+
   def layout_view_assigns(body)
-    public_view_assigns.merge({'content_for_header'=>"",'content_for_layout'=>body})
+    public_view_assigns.merge({'content_for_header'=>"#{csrf_meta_tags}",'content_for_layout'=>body})
+  end
+
+  def add_authenticity_token(body)
+    body.gsub!("</form","<input type=\"hidden\" name=\"#{request_forgery_protection_token.to_s}\" value=\"#{form_authenticity_token}\"></form")
   end
 end

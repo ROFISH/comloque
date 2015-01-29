@@ -25,7 +25,6 @@ A lot of this is inspired... well taken, from rails-jquery.
 handleMethod = (link,method,newhref) ->
   href = newhref || link.attr('href')
   target = link.attr('target')
-  # csrf is not used for now
   csrfToken = $('meta[name=csrf-token]').attr('content')
   csrfParam = $('meta[name=csrf-param]').attr('content')
   form = $('<form method="post" action="' + href + '"></form>')
