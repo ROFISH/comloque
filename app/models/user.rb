@@ -8,7 +8,12 @@ class User < ActiveRecord::Base
     superuser == 'administrator'
   end
 
+  # this is overwritten from the default because we can typically assume that moderatorships is preloaded and cached each pageload.
+  def moderated_forum_ids
+    @_moderated_forum_ids ||= moderatorships.map(&:forum_id)
+  end
+
   def is_mod_of?(fid)
-    !!(moderatorships.detect{|x| x.forum_id == fid})
+    moderated_forum_ids.include?(fid)
   end
 end

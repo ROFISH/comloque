@@ -43,6 +43,7 @@ class ForumController < PublicController
   def topic
   end
 
+  before_filter :require_edit_message_permission, only:[:edit_message,:update_message]
   def edit_message
   end
 
@@ -53,6 +54,7 @@ class ForumController < PublicController
     redirect_to action: :topic, topic: @topic.permalink, anchor:"message#{@message.id}"
   end
 
+  before_filter :require_delete_message_permission, only:[:delete_message]
   def delete_message
     @message.destroy
     redirect_to action: :topic, topic: @topic.permalink
@@ -100,5 +102,13 @@ private
   def process_create_message
     raise if !@topic.can_reply?(@user)
     @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
+  end
+
+  def require_edit_message_permission
+    render text:"You are not allowed to edit this post.", layout:true, status: :forbidden unless @message.can_edit?(@user)
+  end
+
+  def require_delete_message_permission
+    render text:"You are not allowed to delete this post.", layout:true, status: :forbidden unless @message.can_delete?(@user)
   end
 end

@@ -36,6 +36,14 @@ class PublicController < ActionController::Base
       end
       "<time class=\"changeabletime\" datetime=\"#{time.iso8601}\">#{stringoutput}</time>"
     end
+
+    def edit_message_link(message,string="")
+      "<script>if (window.Comloque.user.can_edit_message(#{message.user.id})) { document.write(\"<a class=\\\"edit_message_link\\\" href=\\\"#{message.url}/edit\\\">#{string.gsub('"','\"')}</a>\") }</script>"
+    end
+
+    def delete_message_link(message,string="")
+      "<script>if (window.Comloque.user.can_delete_message()) { document.write(\"<a class=\\\"delete_message_link\\\" href=\\\"#{message.url}/delete\\\">#{string.gsub('"','\"')}</a>\") }</script>"
+    end
   end
 
   # Prevent CSRF attacks by raising an exception.
@@ -60,13 +68,35 @@ class PublicController < ActionController::Base
 
   # Hard overwrite the rendering system to render the templates
   def render_to_body(options)
-    # render text:"blah", layout:false
+    # process the usual options (status, content_type, location)
+    _process_options(options)
+    # directly to the render text option
     return options[:text] if !options[:text].blank? && !options[:layout]
 
-    body = render_liquid_body(options)
+    # set the body to the text if we are rendering that text to the layout
+    if !options[:text].blank? && options[:layout] == true
+      body = options[:text]
+    else
+      body = render_liquid_body(options)
+    end
+
     layout = render_liquid_layout(body)
     BODY_TRANSFORMS.each{|method| __send__(method,layout)}
     layout
+  end
+
+  # overwrite for actionview defaults
+  def _layout_for_option(name)
+    case name
+    when String     then name
+    when Proc       then name
+    when true       then true
+    when :default   then true
+    when false, nil then nil
+    else
+      raise ArgumentError,
+        "String, Proc, :default, true, or false, expected for `layout'; you passed #{name.inspect}"
+    end
   end
 
 private
@@ -120,8 +150,38 @@ private
     "<meta name=\"csrf-param\" content=\"#{request_forgery_protection_token.to_s}\">\n<meta name=\"csrf-token\" content=\"#{form_authenticity_token.to_s}\">"
   end
 
+  def add_js_user
+    out = "<script>window.Comloque = window.Comloque || {};
+window.Comloque.user = window.Comloque.user || {};
+window.Comloque.user.id = #{@user.try(:id) || "null"};
+window.Comloque.user.is_admin = #{@user.try(:is_admin?) || false};
+window.Comloque.user.is_mod = #{@user.try(:is_mod_of?,@forum.try(:id)) || false};
+window.Comloque.user.can_edit_message = function(message_user_id) {
+  if (window.Comloque.user == null)
+    return false;
+  if (window.Comloque.user.id == message_user_id)
+    return true;
+  if (window.Comloque.user.is_admin)
+    return true;
+  if (window.Comloque.user.is_mod)
+    return true;
+  return false;
+}
+window.Comloque.user.can_delete_message = function() {
+  return true;
+  if (window.Comloque.user == null)
+    return false;
+  if (window.Comloque.user.is_admin)
+    return true;
+  if (window.Comloque.user.is_mod)
+    return true;
+  return false;
+}
+</script>"
+  end
+
   def layout_view_assigns(body)
-    public_view_assigns.merge({'content_for_header'=>"#{csrf_meta_tags}",'content_for_layout'=>body})
+    public_view_assigns.merge({'content_for_header'=>"#{csrf_meta_tags}\n#{add_js_user}",'content_for_layout'=>body})
   end
 
   def add_authenticity_token(body)
