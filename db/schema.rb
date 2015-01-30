@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130004041) do
+ActiveRecord::Schema.define(version: 20150130063651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,12 @@ ActiveRecord::Schema.define(version: 20150130004041) do
     t.datetime "updated_at"
   end
 
+  create_table "forum_reads", force: :cascade do |t|
+    t.integer  "forum_id"
+    t.integer  "user_id"
+    t.datetime "updated_at"
+  end
+
   create_table "forums", force: :cascade do |t|
     t.string   "name",                 limit: 255
     t.datetime "created_at"
@@ -46,10 +52,11 @@ ActiveRecord::Schema.define(version: 20150130004041) do
     t.string   "privacy",                          default: "public", null: false
     t.boolean  "allow_create_topic",               default: true,     null: false
     t.boolean  "allow_create_message",             default: true,     null: false
+    t.datetime "last_posted_at"
   end
 
   create_table "messages", force: :cascade do |t|
-    t.string   "topic_id",   limit: 255
+    t.integer  "topic_id"
     t.text     "body"
     t.integer  "user_id"
     t.datetime "created_at"

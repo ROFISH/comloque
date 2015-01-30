@@ -15,6 +15,7 @@ class Message < ActiveRecord::Base
 
   def increment_counter_and_touch_topic
     Topic.where(id:topic_id).update_all(["messages_count = COALESCE(messages_count, 0) + 1, last_posted_at = ?",self.created_at.to_s(:db)])
+    Forum.where(id:topic.forum_id).update_all(["last_posted_at = ?",self.created_at.to_s(:db)]) if topic.forum_id
   end
 
   def decrement_counter_and_touch_topic

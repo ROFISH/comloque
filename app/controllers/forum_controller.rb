@@ -31,10 +31,13 @@ class ForumController < PublicController
     # 2) user sees only categories containing forums the user is allowed to see
     categories = @forums.map{|x| x.category}.uniq
     @categories = categories.map{|cat| CategoryDrop.new(cat,@forums.select{|f| f.category_id == cat.id})}
+
+    @forum_reads = @user.try(:forum_reads_for,@forums.map(&:id)) || {}
   end
 
+  after_filter :touch_forum_read, only:[:topiclist], if: ->{@user && @forum}
   def topiclist
-    @topics = @forum.topics
+    @topics = @forum.topics.order(last_posted_at: :desc)
   end
 
   def newtopic
@@ -110,5 +113,11 @@ private
 
   def require_delete_message_permission
     render text:"You are not allowed to delete this post.", layout:true, status: :forbidden unless @message.can_delete?(@user)
+  end
+
+  def touch_forum_read
+    if @user.forum_reads.where(forum_id:@forum.id).update_all(updated_at:Time.now) == 0
+      @user.forum_reads.create(forum_id:@forum.id)
+    end
   end
 end

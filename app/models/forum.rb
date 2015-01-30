@@ -1,11 +1,12 @@
 class Forum < ActiveRecord::Base
   belongs_to :category
-  has_many :topics, ->{order(last_posted_at: :desc)}, inverse_of: :forum
+  has_many :topics, inverse_of: :forum
+  has_many :messages, through: :topics
   has_many :moderatorships
   has_many :moderators, through: :moderatorships, source: :user
 
-  LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
-  LIQUEFIABLE_METHODS = {url: :url, topics: :topics, moderators: :moderators}.freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(id name last_posted_at).freeze
+  LIQUEFIABLE_METHODS = {url: :url, recent_topics: :recent_topics, moderators: :moderators}.freeze
   LIQUEFIABLE_USER_METHODS = {can_create_topic?: :can_create_topic?}.freeze
   include Liquefiable
 
@@ -28,6 +29,10 @@ class Forum < ActiveRecord::Base
 
   def url
     "/forum/#{category_permalink}/#{permalink}"
+  end
+
+  def recent_topics
+    topics.order(last_posted_at: :desc).limit(3)
   end
 
   def can_create_topic?(user)
@@ -56,5 +61,10 @@ class Forum < ActiveRecord::Base
 
   def moderator_tokens=(tokens)
     self.moderator_ids = tokens.split(",").reject{|x| x.to_i<=0}
+  end
+
+  def reset_cached_metadata
+    new_touch = messages.order(:created_at=>:desc).first.try(:created_at)
+    update(last_posted_at:new_touch.try(:to_s,:db))
   end
 end
