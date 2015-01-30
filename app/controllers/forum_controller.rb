@@ -45,6 +45,7 @@ class ForumController < PublicController
   end
 
   after_filter :touch_topic_read, only:[:topic], if: ->{@user && @topic}
+  after_filter :update_topic_views, only:[:topic], if: ->{@user && @topic}
   def topic
   end
 
@@ -127,5 +128,11 @@ private
     if @user.topic_reads.where(topic_id:@topic.id).update_all(updated_at:Time.now) == 0
       @user.topic_reads.create(topic_id:@topic.id)
     end
+  end
+
+  def update_topic_views
+    # :last_topic where we don't double count if you are loading twice
+    Topic.where(id:@topic.id).update_all("views = COALESCE(views, 0) + 1") unless session[:last_topic] == @topic.id
+    session[:last_topic] = @topic.id
   end
 end
