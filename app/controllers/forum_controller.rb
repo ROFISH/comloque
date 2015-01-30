@@ -38,11 +38,13 @@ class ForumController < PublicController
   after_filter :touch_forum_read, only:[:topiclist], if: ->{@user && @forum}
   def topiclist
     @topics = @forum.topics.order(last_posted_at: :desc)
+    @topic_reads = @user.try(:topic_reads_for,@topics.map(&:id)) || {}
   end
 
   def newtopic
   end
 
+  after_filter :touch_topic_read, only:[:topic], if: ->{@user && @topic}
   def topic
   end
 
@@ -118,6 +120,12 @@ private
   def touch_forum_read
     if @user.forum_reads.where(forum_id:@forum.id).update_all(updated_at:Time.now) == 0
       @user.forum_reads.create(forum_id:@forum.id)
+    end
+  end
+
+  def touch_topic_read
+    if @user.topic_reads.where(topic_id:@topic.id).update_all(updated_at:Time.now) == 0
+      @user.topic_reads.create(topic_id:@topic.id)
     end
   end
 end
