@@ -10,6 +10,18 @@ class Message < ActiveRecord::Base
 
   include Sanitizable
 
+  after_create :increment_counter_and_touch_topic, unless: ->(x){x.topic_id.blank?}
+  after_destroy :decrement_counter_and_touch_topic
+
+  def increment_counter_and_touch_topic
+    Topic.where(id:topic_id).update_all(["messages_count = COALESCE(messages_count, 0) + 1, last_posted_at = ?",self.created_at.to_s(:db)])
+  end
+
+  def decrement_counter_and_touch_topic
+    new_touch = Message.where(topic_id:topic_id).order(:created_at=>:desc).first.try(:created_at)
+    Topic.where(id:topic_id).update_all(["messages_count = COALESCE(messages_count, 0) - 1, last_posted_at = ?",new_touch.try(:to_s,:db)])
+  end
+
   def url
     "#{topic.url}/#{id}"
   end

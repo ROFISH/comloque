@@ -3,7 +3,7 @@ class Topic < ActiveRecord::Base
   belongs_to :user
   has_many :messages
 
-  LIQUEFIABLE_ATTRIBUTES = %i(name created_at).freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(name created_at last_posted_at messages_count).freeze
   LIQUEFIABLE_METHODS = {url: :url, user: :user, messages: :messages}.freeze
   LIQUEFIABLE_USER_METHODS = {can_reply?: :can_reply?}.freeze
   include Liquefiable
@@ -22,5 +22,11 @@ class Topic < ActiveRecord::Base
     return true if user.is_admin?                 # admins are always allowed to reply
     return true if user.is_mod_of? self.forum_id  # mods of this forum are always allowed to reply
     return forum.allow_create_message             # otherwise, use the forum's setting
+  end
+
+  def reset_cached_metadata
+    new_touch = Message.where(topic_id:id).order(:created_at=>:desc).first.try(:created_at)
+    new_count = Message.where(topic_id:id).count
+    update(last_posted_at:new_touch.try(:to_s,:db),messages_count:new_count)
   end
 end

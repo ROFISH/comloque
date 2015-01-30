@@ -1,6 +1,6 @@
 class Forum < ActiveRecord::Base
   belongs_to :category
-  has_many :topics, ->{order({:id=>:desc})}, inverse_of: :forum
+  has_many :topics, ->{order(last_posted_at: :desc)}, inverse_of: :forum
   has_many :moderatorships
   has_many :moderators, through: :moderatorships, source: :user
 
