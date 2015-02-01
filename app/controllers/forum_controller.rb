@@ -55,7 +55,7 @@ class ForumController < PublicController
 
   def update_topic
     updated_attrs = {}
-    updated_attrs[:name] =  params[:topic_name] if params[:topic_name]
+    updated_attrs[:name] = params[:topic_name] if params[:topic_name]
     @topic.update(updated_attrs)
     redirect_to action: :topic, topic: @topic.permalink
   end
@@ -66,7 +66,7 @@ class ForumController < PublicController
 
   def update_message
     updated_attrs = {}
-    updated_attrs[:body] =  params[:message_body] if params[:message_body]
+    updated_attrs[:body] = params[:message_body] if params[:message_body]
     @message.update(updated_attrs)
     redirect_to action: :topic, topic: @topic.permalink, anchor:"message#{@message.id}"
   end
