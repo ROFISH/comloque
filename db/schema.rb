@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130101017) do
+ActiveRecord::Schema.define(version: 20150201013038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,16 @@ ActiveRecord::Schema.define(version: 20150130101017) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "scope_id"
+  end
+
+  create_table "swear_words", force: :cascade do |t|
+    t.string   "word"
+    t.boolean  "case_sensitive",          default: false, null: false
+    t.string   "mask"
+    t.boolean  "require_beginning_space", default: true,  null: false
+    t.boolean  "require_ending_space",    default: true,  null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
   create_table "templates", force: :cascade do |t|

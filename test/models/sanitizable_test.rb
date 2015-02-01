@@ -90,4 +90,26 @@ class SanitizableTest < ActiveSupport::TestCase
     FactoryGirl.create(:emoji)
     assert_equal "<p><img src=\"/uploads/emoji/image/1/smile.png\"></p>", basic_sanitize(":)",[Emoji::SanitizeTransformer.new])
   end
+
+  def test_swear_1
+    FactoryGirl.create(:swear_word)
+    assert_equal "<p>damn abcd shit</p>", basic_sanitize("damn fuck shit",[SwearWord::SanitizeTransformer.new])
+  end
+
+  def test_swear_2
+    FactoryGirl.create(:swear_word)
+    assert_equal "<p>d<u>a</u>mn a<b>b</b>cd s<i>h</i>it</p>", basic_sanitize("d<u>a</u>mn f<b>u</b>ck s<i>h</i>it",[SwearWord::SanitizeTransformer.new])
+  end
+
+  def test_swear_3
+    FactoryGirl.create(:swear_word)
+    assert_equal "<p><b>damn!</b> abcd shit</p>", basic_sanitize("<b>damn!</b> fuck shit",[SwearWord::SanitizeTransformer.new])
+  end
+
+  def test_swear_rofish
+    FactoryGirl.create(:swear_word_rofish)
+    assert_equal "<p>rofish</p>", basic_sanitize("rofish",[SwearWord::SanitizeTransformer.new])
+    assert_equal "<p>ROFISH</p>", basic_sanitize("Rofish",[SwearWord::SanitizeTransformer.new])
+    assert_equal "<p>ROFISH</p>", basic_sanitize("ROFISH",[SwearWord::SanitizeTransformer.new])
+  end
 end

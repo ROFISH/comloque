@@ -1,0 +1,20 @@
+.page-header
+  %h1 Swear Words
+
+%p
+  =link_to "New Swear Words", new_admin_swear_word_path, class:"btn btn-primary"
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Word
+      %th Replacement
+      %th Actions
+  %tbody
+    -@swear_words.sort_by{|x| x.word.try(:downcase) || ""}.each do |swear_word|
+      %tr
+        %td=swear_word.word
+        %td=swear_word.mask
+        %td
+          =link_to "Edit",[:edit,:admin,swear_word], class:'btn btn-sm btn-success'
+          =link_to "Destroy",[:admin,swear_word], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"

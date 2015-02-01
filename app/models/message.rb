@@ -32,7 +32,7 @@ class Message < ActiveRecord::Base
   end
 
   def sanitized_body
-    basic_sanitize(body,[Emoji::SanitizeTransformer.new])
+    basic_sanitize(body,[Emoji::SanitizeTransformer.new,SwearWord::SanitizeTransformer.new])
   end
 
   def can_edit?(user)

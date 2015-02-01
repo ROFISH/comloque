@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     end
 
     resources :emojis
+    resources :swear_words
   end
 
   root 'forum#index'

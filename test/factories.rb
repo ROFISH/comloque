@@ -8,4 +8,14 @@ FactoryGirl.define do
       name "8)"
     end
   end
+
+  factory :swear_word do
+    word 'fuck'
+    mask 'abcd'
+    factory :swear_word_rofish do
+      word 'Rofish'
+      mask 'ROFISH'
+      case_sensitive true
+    end
+  end
 end
