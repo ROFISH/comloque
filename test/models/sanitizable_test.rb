@@ -65,4 +65,29 @@ class SanitizableTest < ActiveSupport::TestCase
     # since this one managed to keep their tags in each paragraph, it will simply pass through
     assert_equal "<p>lol</p>\n\n<p>some tags these are</p>", basic_sanitize("<p>lol</p>\n\n<p>some tags these are</p>")
   end
+
+  def test_emoji_1
+    FactoryGirl.create(:emoji)
+    assert_equal "<p>hey there <img src=\"/uploads/emoji/image/1/smile.png\"> i smile</p>", basic_sanitize("hey there :) i smile",[Emoji::SanitizeTransformer.new])
+  end
+
+  def test_emoji_2
+    FactoryGirl.create(:emoji_sunglasses)
+    assert_equal "<p>there are fourty eight (48) of them</p>", basic_sanitize("there are fourty eight (48) of them",[Emoji::SanitizeTransformer.new])
+  end
+
+  def test_emoji_3
+    FactoryGirl.create(:emoji)
+    assert_equal "<p>i like that <img src=\"/uploads/emoji/image/1/smile.png\"></p>", basic_sanitize("i like that :)",[Emoji::SanitizeTransformer.new])
+  end
+
+  def test_emoji_4
+    FactoryGirl.create(:emoji)
+    assert_equal "<p><img src=\"/uploads/emoji/image/1/smile.png\"> i like that</p>", basic_sanitize(":) i like that",[Emoji::SanitizeTransformer.new])
+  end
+
+  def test_emoji_5
+    FactoryGirl.create(:emoji)
+    assert_equal "<p><img src=\"/uploads/emoji/image/1/smile.png\"></p>", basic_sanitize(":)",[Emoji::SanitizeTransformer.new])
+  end
 end

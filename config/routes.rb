@@ -72,6 +72,8 @@ Rails.application.routes.draw do
       resources :templates
       resources :assets
     end
+
+    resources :emojis
   end
 
   root 'forum#index'

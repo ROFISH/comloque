@@ -1,0 +1,20 @@
+.page-header
+  %h1 Emoji
+
+%p
+  =link_to "New Emoji", new_admin_emoji_path, class:"btn btn-primary"
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Image
+      %th Actions
+  %tbody
+    -@emojis.each do |emoji|
+      %tr
+        %td=emoji.name
+        %td=image_tag emoji.image.url
+        %td
+          =link_to "Edit",[:edit,:admin,emoji], class:'btn btn-sm btn-success'
+          =link_to "Destroy",[:admin,emoji], :class=>'btn btn-sm btn-danger', "data-confirm"=>"Are you sure?", "data-method"=>"delete"
