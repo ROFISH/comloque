@@ -44,6 +44,11 @@ class PublicController < ActionController::Base
     def delete_message_link(message,string="")
       "<script>if (window.Comloque.user.can_delete_message()) { document.write(\"<a class=\\\"delete_message_link\\\" href=\\\"#{message.url}/delete\\\">#{string.gsub('"','\"')}</a>\") }</script>"
     end
+
+    def edit_topic_link(topic,string="")
+      return "" unless topic.is_a?(Topic::Drop)
+      "<script>if (window.Comloque.user.can_edit_topic(#{topic.user.id})) { document.write(\"<a class=\\\"edit_topic_link\\\" href=\\\"#{topic.url}/edit\\\">#{string.gsub('"','\"')}</a>\") }</script>"
+    end
   end
 
   # Prevent CSRF attacks by raising an exception.
@@ -160,6 +165,17 @@ window.Comloque.user.can_edit_message = function(message_user_id) {
   if (window.Comloque.user == null)
     return false;
   if (window.Comloque.user.id == message_user_id)
+    return true;
+  if (window.Comloque.user.is_admin)
+    return true;
+  if (window.Comloque.user.is_mod)
+    return true;
+  return false;
+}
+window.Comloque.user.can_edit_topic = function(topic_user_id) {
+  if (window.Comloque.user == null)
+    return false;
+  if (window.Comloque.user.id == topic_user_id)
     return true;
   if (window.Comloque.user.is_admin)
     return true;

@@ -3,7 +3,8 @@ class Topic < ActiveRecord::Base
   belongs_to :user
   has_many :messages
 
-  LIQUEFIABLE_ATTRIBUTES = %i(id name created_at last_posted_at messages_count views).freeze
+  LIQUEFIABLE_ATTRIBUTES = %i(id created_at last_posted_at messages_count views).freeze
+  LIQUEFIABLE_SANITIZED_ATTRIBUTES = %i(name).freeze
   LIQUEFIABLE_METHODS = {url: :url, user: :user, messages: :messages}.freeze
   LIQUEFIABLE_USER_METHODS = {can_reply?: :can_reply?}.freeze
   include Liquefiable
@@ -22,6 +23,14 @@ class Topic < ActiveRecord::Base
     return true if user.is_admin?                 # admins are always allowed to reply
     return true if user.is_mod_of? self.forum_id  # mods of this forum are always allowed to reply
     return forum.allow_create_message             # otherwise, use the forum's setting
+  end
+
+  def can_edit?(user)
+    return false if user.nil?                           # unregistered anonymous folk not allowed to edit
+    return true if user.id == self.user_id              # users are allowed to edit their own topics
+    return true if user.is_admin?                       # admins are always allowed to edit
+    return true if user.is_mod_of? self.topic.forum_id  # mods of this forum are allowed to edit
+    return false                                        # otherwise, no
   end
 
   def reset_cached_metadata

@@ -31,7 +31,14 @@ module Liquefiable
 
   included do |base|
     klass = Class.new(Liquid::Drop)
+    klass.include(ERB::Util)
     klass.__send__(:define_method,:initialize) {|thing| @thing = thing}
+
+    base::LIQUEFIABLE_SANITIZED_ATTRIBUTES.each do |attr_name|
+      klass.__send__(:define_method,attr_name) do
+        h(@thing.attributes[attr_name.to_s])
+      end
+    end if defined? base::LIQUEFIABLE_SANITIZED_ATTRIBUTES
 
     base::LIQUEFIABLE_ATTRIBUTES.each do |attr_name|
       klass.__send__(:define_method,attr_name) do

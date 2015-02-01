@@ -38,6 +38,7 @@ module Permalinkable
     if attribute_names.include?("permalink")
       validate :new_permalink_doesnt_exist, if:->(x){x.permalink_changed?}
       before_create :set_permalink_from_autoset, if:->(x){x.permalink.blank?} if base.class_variable_defined?(:@@permalinkable_autoset)
+      before_update :set_permalink_from_autoset, if:->(x){x.__send__((x.class.permalinkable_autoset.to_s + "_changed?").to_sym)} if base.class_variable_defined?(:@@permalinkable_autoset)
       after_save :save_permalink, if:->(x){x.permalink_changed?}
     end
   end
@@ -90,7 +91,7 @@ module Permalinkable
     self.permalink = __send__(self.class.permalinkable_autoset).parameterize
     permalink_will_change!
     1000.times do |i|
-      break unless Topic.exists?(permalink:self.permalink)
+      break unless Permalink.exists?(name:self.permalink,thang_type:self.class.base_class.name)
       self.permalink = __send__(self.class.permalinkable_autoset).parameterize+"-#{i+1}"
     end
   end

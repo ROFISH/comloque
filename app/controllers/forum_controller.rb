@@ -20,8 +20,8 @@ class ForumController < PublicController
     end
   end
 
-  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_message,:update_message,:delete_message]
-  before_filter :require_topic!, only:[:topic,:edit_message,:update_message,:delete_message]
+  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message]
+  before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message]
   before_filter :require_message!, only:[:edit_message,:update_message,:delete_message]
 
   def index
@@ -47,6 +47,17 @@ class ForumController < PublicController
   after_filter :touch_topic_read, only:[:topic], if: ->{@user && @topic}
   after_filter :update_topic_views, only:[:topic], if: ->{@user && @topic}
   def topic
+  end
+
+  before_filter :require_edit_topic_permission, only:[:edit_topic,:update_topic]
+  def edit_topic
+  end
+
+  def update_topic
+    updated_attrs = {}
+    updated_attrs[:name] =  params[:topic_name] if params[:topic_name]
+    @topic.update(updated_attrs)
+    redirect_to action: :topic, topic: @topic.permalink
   end
 
   before_filter :require_edit_message_permission, only:[:edit_message,:update_message]
@@ -108,6 +119,10 @@ private
   def process_create_message
     raise if !@topic.can_reply?(@user)
     @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
+  end
+
+  def require_edit_topic_permission
+    render text:"You are not allowed to edit this topic.", layout:true, status: :forbidden unless @topic.can_edit?(@user)
   end
 
   def require_edit_message_permission
