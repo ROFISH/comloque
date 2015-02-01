@@ -56,6 +56,10 @@ class ForumController < PublicController
   def update_topic
     updated_attrs = {}
     updated_attrs[:name] = params[:topic_name] if params[:topic_name]
+    if @topic.can_mod?(@user)
+      updated_attrs[:locked_at] = Time.now if @topic.unlocked? && params[:topic_locked] == "true"
+      updated_attrs[:locked_at] = nil if @topic.locked? && params[:topic_locked] == "false"
+    end
     @topic.update(updated_attrs)
     redirect_to action: :topic, topic: @topic.permalink
   end
@@ -118,7 +122,15 @@ private
 
   def process_create_message
     raise if !@topic.can_reply?(@user)
-    @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
+    Message.transaction do
+      @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
+      topic_updated_attrs = {}
+      if @topic.can_mod?(@user)
+        topic_updated_attrs[:locked_at] = Time.now if @topic.unlocked? && params[:topic_locked] == "true"
+        topic_updated_attrs[:locked_at] = nil if @topic.locked? && params[:topic_locked] == "false"
+      end
+      @topic.update(topic_updated_attrs) unless topic_updated_attrs.blank?
+    end
   end
 
   def require_edit_topic_permission
