@@ -4,6 +4,7 @@ class Emoji < ActiveRecord::Base
 
   class SanitizeTransformer
     def initialize
+      # OPTIMIZATION TODO: Try and keep this information in memory for longer. As of right now it reloads on each rendered message, and that's bad.
       @all_emoji = Emoji.all.to_a
     end
 

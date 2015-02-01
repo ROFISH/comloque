@@ -203,4 +203,29 @@ window.Comloque.user.can_delete_message = function() {
   def add_authenticity_token(body)
     body.gsub!("</form","<input type=\"hidden\" name=\"#{request_forgery_protection_token.to_s}\" value=\"#{form_authenticity_token}\"></form")
   end
+
+  # def cleanup_view_runtime
+  #   super - @message_sanitize_ms
+  # end
+
+  # def append_info_to_payload(payload)
+  #   super
+  #   payload[:message_sanitize_ms] = @message_sanitize_ms
+  # end
+
+
+  # module Instrumentation2
+  #   extend ActiveSupport::Concern
+  #   private
+  #   module ClassMethods
+  #     def log_process_action(payload) #:nodoc:
+  #       messages, message_sanitize_ms = super, payload[:message_sanitize_ms]
+  #       messages << ("message_sanitize_ms: %.1fms" % message_sanitize_ms.to_f) if message_sanitize_ms
+  #       messages
+  #     end
+  #   end
+  # end
+
+  # ActionController::Base.include Instrumentation2
+
 end

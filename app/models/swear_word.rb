@@ -13,6 +13,7 @@ class SwearWord < ActiveRecord::Base
 
   class SanitizeTransformer
     def initialize
+      # OPTIMIZATION TODO: Try and keep this information in memory for longer. As of right now it reloads on each rendered message, and that's bad.
       @all_swears = Hash[SwearWord.all.map{|x| [x.regexp,x]}]
     end
 

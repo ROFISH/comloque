@@ -136,4 +136,60 @@ module Sanitizable
       transformers:[Sanitizable::OnlyAllowedRootElements] + transformers
     ))
   end
+
+  # if false
+  #   class SanitizeRuntimeRegistry
+  #     extend ActiveSupport::PerThreadRegistry
+
+  #     attr_accessor :runtime
+
+  #     [:runtime].each do |val|
+  #       class_eval %{ def self.#{val}; instance.#{val}; end }, __FILE__, __LINE__
+  #       class_eval %{ def self.#{val}=(x); instance.#{val}=x; end }, __FILE__, __LINE__
+  #     end
+  #   end
+
+  #   RUNTIME = SanitizeRuntimeRegistry.new
+  #   RUNTIME.runtime = 0
+
+  #   module SanitizeControllerRuntime
+  #     extend ActiveSupport::Concern
+
+  #     protected
+
+  #     def process_action(action, *args)
+  #       # We also need to reset the runtime before each action
+  #       # because of queries in middleware or in cases we are streaming
+  #       # and it won't be cleaned up by the method below.
+  #       RUNTIME.runtime = 0
+  #       super
+  #     end
+
+  #     def append_info_to_payload(payload)
+  #       super
+  #       payload[:sanitize_runtime] = RUNTIME.runtime
+  #     end
+
+  #     module ClassMethods
+  #       def log_process_action(payload)
+  #         messages, sanitize_runtime = super, payload[:sanitize_runtime]
+  #         messages << ("Message Sanitize: %.1fms" % sanitize_runtime.to_f) if sanitize_runtime
+  #         messages
+  #       end
+  #     end
+  #   end
+
+  #   ActiveSupport.on_load(:action_controller) do
+  #     include SanitizeControllerRuntime
+  #   end
+
+  #   def basic_sanitize_with_runtime(string,transformers=[])
+  #     out = ""
+  #     RUNTIME.runtime += Benchmark.ms {
+  #       out = basic_sanitize_without_runtime(string,transformers=[])
+  #     }
+  #     out
+  #   end
+  #   alias_method_chain :basic_sanitize, :runtime
+  # end
 end
