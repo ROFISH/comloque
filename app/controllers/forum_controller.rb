@@ -37,7 +37,7 @@ class ForumController < PublicController
 
   after_filter :touch_forum_read, only:[:topiclist], if: ->{@user && @forum}
   def topiclist
-    @topics = @forum.topics.order(last_posted_at: :desc)
+    @topics = @forum.topics.order(last_posted_at: :desc).includes(:user)
     @topic_reads = @user.try(:topic_reads_for,@topics.map(&:id)) || {}
   end
 

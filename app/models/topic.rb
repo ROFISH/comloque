@@ -5,7 +5,7 @@ class Topic < ActiveRecord::Base
 
   LIQUEFIABLE_ATTRIBUTES = %i(id created_at last_posted_at messages_count views locked_at).freeze
   LIQUEFIABLE_SANITIZED_ATTRIBUTES = %i(name).freeze
-  LIQUEFIABLE_METHODS = {url: :url, user: :user, messages: :messages, locked?: :locked?, unlocked?: :unlocked?}.freeze
+  LIQUEFIABLE_METHODS = {url: :url, user: :user, messages: :liquid_messages, locked?: :locked?, unlocked?: :unlocked?}.freeze
   LIQUEFIABLE_USER_METHODS = {can_reply?: :can_reply?, can_mod?: :can_mod?}.freeze
   include Liquefiable
 
@@ -16,6 +16,10 @@ class Topic < ActiveRecord::Base
 
   def url
     "/forum/#{forum.category_permalink}/#{forum.permalink}/#{permalink}"
+  end
+
+  def liquid_messages
+    messages.includes(:user)
   end
 
   def locked?
