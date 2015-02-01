@@ -133,7 +133,7 @@ class SwearWord < ActiveRecord::Base
   def regexp
     chars = []
     self.word.each_char do |char|
-      if self.case_sensitive
+      if !self.case_sensitive
         chars << case char.downcase
           when "a"
             "[AÀÁÂÄÆÃÅĀ4aàáâäæãåā\\@]"

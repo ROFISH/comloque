@@ -112,4 +112,14 @@ class SanitizableTest < ActiveSupport::TestCase
     assert_equal "<p>ROFISH</p>", basic_sanitize("Rofish",[SwearWord::SanitizeTransformer.new])
     assert_equal "<p>ROFISH</p>", basic_sanitize("ROFISH",[SwearWord::SanitizeTransformer.new])
   end
+
+  def test_swear_weird_chars_1
+    FactoryGirl.create(:swear_word,case_sensitive:true)
+    assert_equal "<p>fÜck</p>", basic_sanitize("fÜck",[SwearWord::SanitizeTransformer.new])
+  end
+
+  def test_swear_weird_chars_2
+    FactoryGirl.create(:swear_word,case_sensitive:false)
+    assert_equal "<p>abcd</p>", basic_sanitize("fÜck",[SwearWord::SanitizeTransformer.new])
+  end
 end
