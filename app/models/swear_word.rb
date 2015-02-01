@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class SwearWord < ActiveRecord::Base
   validates_presence_of :word, :mask
   validate :mask_cannot_be_bigger_than_word
@@ -126,16 +127,6 @@ class SwearWord < ActiveRecord::Base
         end
       end
 
-      #raise "stringlength: #{stringlength} string: #{string} tagmap: #{tagmap}"
-
-      # thishtml = node.to_html
-      # newhtml = thishtml.dup
-      # @all_swears.each do |regexp, mask|
-      #   newhtml.gsub!(regexp) do |loll|
-      #     raise loll.inspect
-      #   end
-      # end
-      # raise newhtml
     end
   end
 
