@@ -86,6 +86,7 @@ Rails.application.routes.draw do
   get '/forum/:cat/:forum/:topic/edit' => 'forum#edit_topic'
   post '/forum/:cat/:forum/:topic/edit' => 'forum#update_topic'
   post '/forum/:cat/:forum/:topic/reply' => 'forum#create_message'
+  get '/forum/:cat/:forum/:topic/:message(.:format)' => 'forum#show_message'
   delete '/forum/:cat/:forum/:topic/:message' => 'forum#delete_message'
   get '/forum/:cat/:forum/:topic/:message/edit' => 'forum#edit_message'
   post '/forum/:cat/:forum/:topic/:message/edit' => 'forum#update_message'

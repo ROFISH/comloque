@@ -93,3 +93,24 @@ $(document).on 'click.delete',"a[href$='\/delete']", (e)->
 
   handleMethod link, method, link.attr('href').replace(/\/delete$/,'')
 
+$(document).on 'click.quote',"a[href$='\/quote']", (e)->
+  # allow a new tab to be created with the link
+  metaClick = e.metaKey || e.ctrlKey
+  return true if metaClick
+
+  e.preventDefault();
+  dataurl = $(this).attr('href').replace(/\/quote$/,'')+".json";
+
+  $.ajax
+    url: dataurl
+    type: 'GET'
+    dataType: 'json'
+    success: (data,textStatus,xhr)->
+      textarea = $('[name=message_body]')
+      new_text = textarea.val()
+      new_text += "\n\n" if new_text.length > 0
+      new_text += "<blockquote cite='#{data.url}'>#{data.body}</blockquote>\n\n"
+      textarea.val(new_text)
+      textarea.focus()
+      length = new_text.length
+      textarea[0].setSelectionRange(length,length)

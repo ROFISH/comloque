@@ -49,4 +49,13 @@ class Message < ActiveRecord::Base
     return true if user.is_mod_of? self.topic.forum_id  # mods of this forum are allowed to delete
     return false                                        # otherwise, no
   end
+
+  def as_json(options={})
+    {
+      id: id,
+      user_id: user_id,
+      url: url,
+      body: sanitized_body
+    }
+  end
 end

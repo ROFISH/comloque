@@ -77,6 +77,7 @@ class PublicController < ActionController::Base
     _process_options(options)
     # directly to the render text option
     return options[:text] if !options[:text].blank? && !options[:layout]
+    return render_to_json(options[:json]) if !options[:json].blank?
 
     # set the body to the text if we are rendering that text to the layout
     if !options[:text].blank? && options[:layout] == true
@@ -88,6 +89,12 @@ class PublicController < ActionController::Base
     layout = render_liquid_layout(body)
     BODY_TRANSFORMS.each{|method| __send__(method,layout)}
     layout
+  end
+
+  def render_to_json(json)
+    json = json.to_json unless json.kind_of?(String)
+    self.content_type ||= Mime::JSON
+    json
   end
 
   # overwrite for actionview defaults

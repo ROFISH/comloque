@@ -20,9 +20,9 @@ class ForumController < PublicController
     end
   end
 
-  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message]
-  before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message]
-  before_filter :require_message!, only:[:edit_message,:update_message,:delete_message]
+  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message,:show_message]
+  before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message,:show_message]
+  before_filter :require_message!, only:[:edit_message,:update_message,:delete_message,:show_message]
 
   def index
     @forums = Forum.public_scope(@user).includes(:category)
@@ -62,6 +62,12 @@ class ForumController < PublicController
     end
     @topic.update(updated_attrs)
     redirect_to action: :topic, topic: @topic.permalink
+  end
+
+  def show_message
+    respond_to do |format|
+      format.json { render json: @message }
+    end
   end
 
   before_filter :require_edit_message_permission, only:[:edit_message,:update_message]
