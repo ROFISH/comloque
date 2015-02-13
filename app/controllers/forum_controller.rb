@@ -20,9 +20,8 @@ class ForumController < PublicController
     end
   end
 
-  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message,:show_message]
-  before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic,:edit_message,:update_message,:delete_message,:show_message]
-  before_filter :require_message!, only:[:edit_message,:update_message,:delete_message,:show_message]
+  before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic]
+  before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic]
 
   def index
     @forums = Forum.public_scope(@user).includes(:category)
@@ -64,36 +63,6 @@ class ForumController < PublicController
     redirect_to action: :topic, topic: @topic.permalink
   end
 
-  def show_message
-    respond_to do |format|
-      format.json { render json: @message }
-    end
-  end
-
-  before_filter :require_edit_message_permission, only:[:edit_message,:update_message]
-  def edit_message
-  end
-
-  def update_message
-    updated_attrs = {}
-    updated_attrs[:body] = params[:message_body] if params[:message_body]
-    @message.update(updated_attrs)
-    redirect_to action: :topic, topic: @topic.permalink, anchor:"message#{@message.id}"
-  end
-
-  before_filter :require_delete_message_permission, only:[:delete_message]
-  def delete_message
-    @message.destroy
-    redirect_to action: :topic, topic: @topic.permalink
-  end
-
-  before_filter :require_topic, only:[:create_message]
-  before_filter :process_create_topic, only:[:create_message], if:->(x){ @topic.blank? }
-  before_filter :process_create_message, only:[:create_message]
-  def create_message
-    redirect_to action: :topic, topic: @topic.permalink
-  end
-
   # this shouldn't be in the forum_controller, but for now it lives here until better loginy pages can be made
 
 private
@@ -111,44 +80,8 @@ private
     raise ActiveRecord::RecordNotFound if @topic.blank?
   end
 
-  def require_message
-    require_topic!
-    @message = @topic.messages.find(params[:message])
-  end
-
-  def require_message!
-    require_message
-    raise ActiveRecord::RecordNotFound if @message.blank?
-  end
-
-  def process_create_topic
-    raise if !@forum.can_create_topic?(@user)
-    @topic = Topic.create(name:params[:topic_name],forum_id:@forum.id,user_id:@user.id)
-  end
-
-  def process_create_message
-    raise if !@topic.can_reply?(@user)
-    Message.transaction do
-      @message = Message.create(body:params[:message_body],topic:@topic,user_id:@user.id)
-      topic_updated_attrs = {}
-      if @topic.can_mod?(@user)
-        topic_updated_attrs[:locked_at] = Time.now if @topic.unlocked? && params[:topic_locked] == "true"
-        topic_updated_attrs[:locked_at] = nil if @topic.locked? && params[:topic_locked] == "false"
-      end
-      @topic.update(topic_updated_attrs) unless topic_updated_attrs.blank?
-    end
-  end
-
   def require_edit_topic_permission
     render text:"You are not allowed to edit this topic.", layout:true, status: :forbidden unless @topic.can_edit?(@user)
-  end
-
-  def require_edit_message_permission
-    render text:"You are not allowed to edit this post.", layout:true, status: :forbidden unless @message.can_edit?(@user)
-  end
-
-  def require_delete_message_permission
-    render text:"You are not allowed to delete this post.", layout:true, status: :forbidden unless @message.can_delete?(@user)
   end
 
   def touch_forum_read

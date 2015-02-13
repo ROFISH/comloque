@@ -140,8 +140,9 @@ private
   end
 
   def get_template(options)
+    @template_name = options[:template] if @template_name.nil?
     options[:prefixes].each do |prefix|
-      template = @theme.templates.find_by_name("#{prefix.to_s}/#{options[:template]}")
+      template = @theme.templates.find_by_name("#{prefix.to_s}/#{@template_name}")
       return template if template
     end
     nil
