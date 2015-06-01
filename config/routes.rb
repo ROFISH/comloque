@@ -90,6 +90,8 @@ Rails.application.routes.draw do
   delete '/forum/:cat/:forum/:topic/:message' => 'messages#destroy'
   get '/forum/:cat/:forum/:topic/:message/edit' => 'messages#edit'
   post '/forum/:cat/:forum/:topic/:message/edit' => 'messages#update'
+  get '/forum/:cat/:forum/:topic/:message/report' => 'messages#report'
+  post '/forum/:cat/:forum/:topic/:message/report' => 'messages#create_report'
 
   get '/auth/google_oauth2/callback' => 'login#login'
   get '/register' => 'login#register'

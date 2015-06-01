@@ -19,6 +19,12 @@ class User < ActiveRecord::Base
     moderated_forum_ids.include?(fid)
   end
 
+  def is_mod?
+    # admins are mods too, this is just for tools that require any person to be a moderator
+    # adding the admins by default might change though.
+    !moderated_forum_ids.empty? || is_admin?
+  end
+
   def forum_reads_for(fids)
     hash_map = forum_reads.where(forum_id:fids).map{|x| [x.forum_id,x.updated_at]}
     Hash[hash_map]

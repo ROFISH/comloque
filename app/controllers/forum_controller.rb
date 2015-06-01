@@ -20,6 +20,8 @@ class ForumController < PublicController
     end
   end
 
+  before_filter :get_reports
+
   before_filter :require_forum, only:[:topiclist,:newtopic,:create_message,:topic,:edit_topic,:update_topic]
   before_filter :require_topic!, only:[:topic,:edit_topic,:update_topic]
 
@@ -66,6 +68,10 @@ class ForumController < PublicController
   # this shouldn't be in the forum_controller, but for now it lives here until better loginy pages can be made
 
 private
+  def require_user!
+    render text:"You must be logged in to view this page.", layout:true, status: :forbidden unless @user
+  end
+
   def require_forum
     @forum = Forum.find_by_permalink_and_category_permalink(params[:forum],params[:cat])
     raise ActiveRecord::RecordNotFound if @forum.blank?
@@ -100,5 +106,9 @@ private
     # :last_topic where we don't double count if you are loading twice
     Topic.where(id:@topic.id).update_all("views = COALESCE(views, 0) + 1") unless session[:last_topic] == @topic.id
     session[:last_topic] = @topic.id
+  end
+
+  def get_reports
+    @open_reports = OpenReportsDrop.new(@user)
   end
 end

@@ -150,7 +150,7 @@ private
 
   def no_template_found(options)
     self.status = 422
-    "Unable to find a template for \"#{options[:template]}\" in [#{options[:prefixes].join(',')}]"
+    "Unable to find a template for \"#{@template_name}\" in [#{options[:prefixes].join(',')}]"
   end
 
   COMLOQUE_PROTECTED_IVARS = %w(theme)

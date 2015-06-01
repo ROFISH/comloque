@@ -34,6 +34,17 @@ class MessagesController < ForumController
     redirect_to controller: :forum, action: :topic, topic: @topic.permalink
   end
 
+  before_filter :require_user!, only: [:report,:create_report]
+  before_filter :require_report_not_exist, only: [:report,:create_report]
+  def report
+    @template_name = :report_message
+  end
+
+  def create_report
+    @report = Report.create(user_id:@user.id,message_id:@message.id,reason:params[:report_reason])
+    redirect_to controller: :forum, action: :topic, topic: @topic.permalink
+  end
+
 private
   def require_message
     @message = @topic.messages.find(params[:message])
@@ -50,6 +61,10 @@ private
 
   def require_delete_message_permission
     render text:"You are not allowed to delete this post.", layout:true, status: :forbidden unless @message.can_delete?(@user)
+  end
+
+  def require_report_not_exist
+    render text:"This message has already been reported!", layout:true, status: :conflict if Report.where(message_id:@message.id).exists?
   end
 
   def process_create_topic

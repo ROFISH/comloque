@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  mod_id: MyString
+  resolved_at: 2015-02-12 20:41:18
+  resolution_actions: MyString
+  message_id: 1
+  reason: MyText
+
+two:
+  user_id: 1
+  mod_id: MyString
+  resolved_at: 2015-02-12 20:41:18
+  resolution_actions: MyString
+  message_id: 1
+  reason: MyText

@@ -5,7 +5,7 @@ class Message < ActiveRecord::Base
   belongs_to :topic
 
   LIQUEFIABLE_ATTRIBUTES = %i(id).freeze
-  LIQUEFIABLE_METHODS = {user: :user, created_at: :created_at, updated_at: :updated_at, url: :url, body: :sanitized_body, body_original: :body_original}.freeze
+  LIQUEFIABLE_METHODS = {user: :user, created_at: :created_at, updated_at: :updated_at, url: :url, body: :sanitized_body, body_original: :body_original, topic: :topic}.freeze
   include Liquefiable
 
   include Sanitizable
