@@ -3,7 +3,7 @@ class ReportsController < ForumController
   before_filter :require_topic!
   before_filter :require_message!
 
-  before_filter :require_user!, only: [:new,:create]
+  before_filter :require_user!
   before_filter :require_report_not_exist, only: [:new,:create]
 
   before_filter :require_report_and_can_edit!, except:[:new,:create]
