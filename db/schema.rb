@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213034118) do
+ActiveRecord::Schema.define(version: 20150606052645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 20150213034118) do
 
   create_table "reports", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "mod_id"
+    t.integer  "mod_id"
     t.datetime "resolved_at"
     t.string   "resolution_actions"
     t.integer  "message_id"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20150213034118) do
     t.text     "resolution"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.text     "mod_notes"
   end
 
   create_table "swear_words", force: :cascade do |t|

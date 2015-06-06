@@ -92,6 +92,8 @@ Rails.application.routes.draw do
   post '/forum/:cat/:forum/:topic/:message/edit' => 'messages#update'
   get '/forum/:cat/:forum/:topic/:message/report' => 'messages#report'
   post '/forum/:cat/:forum/:topic/:message/report' => 'messages#create_report'
+  get '/forum/:cat/:forum/:topic/:message/take_report' => 'messages#take_report'
+  post '/forum/:cat/:forum/:topic/:message/resolve_report' => 'messages#resolve_report'
 
   get '/auth/google_oauth2/callback' => 'login#login'
   get '/register' => 'login#register'

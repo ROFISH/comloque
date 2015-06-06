@@ -71,6 +71,14 @@ class PublicController < ActionController::Base
 
   BODY_TRANSFORMS = [:add_authenticity_token].freeze
 
+  alias_method :rails_render_to_body, :render_to_body
+
+  def rails_render_to_string(*args, &block)
+    options = _normalize_render(*args, &block)
+    rails_render_to_body(options)
+  end
+
+
   # Hard overwrite the rendering system to render the templates
   def render_to_body(options)
     # process the usual options (status, content_type, location)
@@ -80,8 +88,10 @@ class PublicController < ActionController::Base
     return render_to_json(options[:json]) if !options[:json].blank?
 
     # set the body to the text if we are rendering that text to the layout
-    if !options[:text].blank? && options[:layout] == true
+    if !options[:text].blank? && !options[:layout].blank?
       body = options[:text]
+    elsif options[:rails]
+      body = rails_render_to_body(options)
     else
       body = render_liquid_body(options)
     end
@@ -98,7 +108,7 @@ class PublicController < ActionController::Base
   end
 
   # overwrite for actionview defaults
-  def _layout_for_option(name)
+  def _layout_for_option2(name)
     case name
     when String     then name
     when Proc       then name

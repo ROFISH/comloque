@@ -1,0 +1,50 @@
+<div id="take-report" class="comloque-built-in-form">
+  <h1>Reported Message in <a href="<%= @topic.url %>"><%= @topic.name %></a></h1>
+  <h3>Message by <%= @message.user.name %></h3>
+
+  <div id="message">
+    <%= @message.body %>
+  </div>
+
+  <h3>Reported by <%= @report.user.name %> because:</h3>
+  <div id="reason">
+    <%= @report.reason %>
+  </div>
+
+  <h4>What do you want to do with this message?</h4>
+
+  <%= form_for @report, url:"#{@message.url}/resolve_report", method:"POST" do |f| %>
+    <div class="delete_post">
+      <%= f.label :delete_post do %>
+        <%= f.check_box :delete_post %>
+        Delete Post
+        <% if f.object.errors[:delete_post] %>
+          <% f.object.errors[:delete_post].each do |error| %>
+            (ERROR: <%= error %>)
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= f.label :lock_topic do %>
+        <%= f.check_box :lock_topic %>
+        Lock Topic
+        <% if f.object.errors[:lock_topic] %>
+          <% f.object.errors[:lock_topic].each do |error| %>
+            (ERROR: <%= error %>)
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="resolution">
+      <%= f.label :resolution, "Resolution: (this will be shown to the offender)" %>
+      <%= f.text_area :resolution %>
+    </div>
+    <div class="mod_note">
+      <%= f.label :mod_notes, "Mod Notes: (this will only be shown to other mods)" %>
+      <%= f.text_area :mod_notes %>
+    </div>
+    <div class="submit">
+      <%= f.submit "Resolve Report", name:"resolve" %>
+      <%= f.submit "Delete Report (will not do any of the above)", name:"delete" %>
+    </div>
+  <% end %>
+</div>
