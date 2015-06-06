@@ -34,71 +34,7 @@ class MessagesController < ForumController
     redirect_to controller: :forum, action: :topic, topic: @topic.permalink
   end
 
-  before_filter :require_user!, only: [:report,:create_report]
-  before_filter :require_report_not_exist, only: [:report,:create_report]
-  def report
-    @template_name = :report_message
-  end
-
-  def create_report
-    @report = Report.create(user_id:@user.id,message_id:@message.id,reason:params[:report_reason])
-    redirect_to controller: :forum, action: :topic, topic: @topic.permalink
-  end
-
-  def take_report
-    @report = Report.find_by_message_id(@message.id)
-    if !@report
-      render text:"No such report.", layout:true, status: :not_found
-      return
-    end
-
-    if !@report.can_edit?(@user)
-      render text:"You cannot take this report.", layout:true, status: :forbidden
-      return
-    end
-
-    render rails:true
-  end
-
-  def resolve_report
-    @report = Report.find_by_message_id(@message.id)
-    if !@report.can_edit?(@user)
-      render text:"You cannot take this report.", layout:true, status: :forbidden
-      return
-    end
-
-    unless @report.resolved_at.blank?
-      render text:"You cannot resolve an already resolved report.", layout:true, status: :forbidden
-      return
-    end
-
-    if params[:delete]
-      @report.destroy
-      flash[:notice] = "Deleted Report."
-      redirect_to @topic.url
-    else
-      this_report_params = report_params
-      this_report_params[:resolved_at] = Time.now if @report.resolved_at.blank?
-      this_report_params[:mod_id] = @user.id if @report.mod_id.blank?
-      if @report.update(this_report_params)
-        flash[:notice] = "Resolved Report."
-        redirect_to @topic.url
-      else
-        flash[:error] = "Error resolving report."
-        render rails:true, action:"take_report"
-      end
-    end
-  end
-
 private
-  def require_message
-    @message = @topic.messages.find(params[:message])
-  end
-
-  def require_message!
-    require_message
-    raise ActiveRecord::RecordNotFound if @message.blank?
-  end
 
   def require_edit_message_permission
     render text:"You are not allowed to edit this post.", layout:true, status: :forbidden unless @message.can_edit?(@user)
@@ -106,10 +42,6 @@ private
 
   def require_delete_message_permission
     render text:"You are not allowed to delete this post.", layout:true, status: :forbidden unless @message.can_delete?(@user)
-  end
-
-  def require_report_not_exist
-    render text:"This message has already been reported!", layout:true, status: :conflict if Report.where(message_id:@message.id).exists?
   end
 
   def process_create_topic
@@ -128,9 +60,5 @@ private
       end
       @topic.update(topic_updated_attrs) unless topic_updated_attrs.blank?
     end
-  end
-
-  def report_params
-    params[:report].permit(:delete_post,:lock_topic,:resolution,:mod_notes)
   end
 end

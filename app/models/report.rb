@@ -3,7 +3,7 @@ class Report < ActiveRecord::Base
   belongs_to :message
 
   LIQUEFIABLE_ATTRIBUTES = %i(id).freeze
-  LIQUEFIABLE_METHODS = {user: :user, created_at: :created_at, updated_at: :updated_at, message: :message, url: :url}.freeze
+  LIQUEFIABLE_METHODS = {user: :user, created_at: :created_at, updated_at: :updated_at, message: :message, url: :liquid_url, id: :id}.freeze
   include Liquefiable
 
   validate :cannot_delete_only_post
@@ -27,7 +27,11 @@ class Report < ActiveRecord::Base
   end
 
   def url
-    "#{message.try(:url)}/take_report"
+    "#{message.try(:url)}/report"
+  end
+
+  def liquid_url
+    "#{message.try(:url)}/report/edit"
   end
 
   def add_resolution_action(newaction)

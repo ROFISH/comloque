@@ -86,6 +86,15 @@ private
     raise ActiveRecord::RecordNotFound if @topic.blank?
   end
 
+  def require_message
+    @message = @topic.messages.find(params[:message])
+  end
+
+  def require_message!
+    require_message
+    raise ActiveRecord::RecordNotFound if @message.blank?
+  end
+
   def require_edit_topic_permission
     render text:"You are not allowed to edit this topic.", layout:true, status: :forbidden unless @topic.can_edit?(@user)
   end

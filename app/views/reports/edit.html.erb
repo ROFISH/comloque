@@ -13,7 +13,7 @@
 
   <h4>What do you want to do with this message?</h4>
 
-  <%= form_for @report, url:"#{@message.url}/resolve_report", method:"POST" do |f| %>
+  <%= form_for @report, url:@report.url, method:"PATCH" do |f| %>
     <div class="delete_post">
       <%= f.label :delete_post do %>
         <%= f.check_box :delete_post %>
