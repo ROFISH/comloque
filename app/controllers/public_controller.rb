@@ -58,6 +58,7 @@ class PublicController < ActionController::Base
 
   before_filter :get_theme
   before_filter :get_user
+  before_filter :get_unread_private_topics, if:->(x){@user}
   def get_theme
     @theme = Theme.last # debug for now
   end
@@ -67,6 +68,10 @@ class PublicController < ActionController::Base
       # we are including moderatorships here because it's used often in permission checking
       @user = User.includes(:moderatorships).find(session[:user_id])
     end
+  end
+
+  def get_unread_private_topics
+    @unread_private_topics = PrivateTopicUser.where(user_id:@user.id).where("last_read < last_message").count
   end
 
   BODY_TRANSFORMS = [:add_authenticity_token].freeze
@@ -122,6 +127,10 @@ class PublicController < ActionController::Base
   end
 
 private
+  def require_user!
+    render text:"You must be logged in to view this page.", layout:true, status: :forbidden unless @user
+  end
+
   def render_liquid_body(options)
     template = get_template(options)
     return no_template_found(options) if template.blank?
@@ -153,7 +162,10 @@ private
     @template_name = options[:template] if @template_name.nil?
     options[:prefixes].each do |prefix|
       template = @theme.templates.find_by_name("#{prefix.to_s}/#{@template_name}")
-      return template if template
+      if template
+        @prefix = prefix
+        return template
+      end
     end
     nil
   end

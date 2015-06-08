@@ -15,7 +15,11 @@ class Topic < ActiveRecord::Base
   include Permalinkable
 
   def url
-    "/forum/#{forum.category_permalink}/#{forum.permalink}/#{permalink}"
+    if forum_id.blank?
+      "/inbox/#{permalink}"
+    else
+      "/forum/#{forum.category_permalink}/#{forum.permalink}/#{permalink}"
+    end
   end
 
   def liquid_messages
@@ -35,7 +39,8 @@ class Topic < ActiveRecord::Base
     return true if user.is_admin?                 # admins are always allowed to reply
     return true if user.is_mod_of? self.forum_id  # mods of this forum are always allowed to reply
     return false if locked?
-    return forum.allow_create_message             # otherwise, use the forum's setting
+    return true if PrivateTopicUser.exists?(user_id:user.id,topic_id:self.id)
+    return forum.allow_create_message if forum    # otherwise, use the forum's setting
   end
 
   def can_edit?(user)

@@ -3,6 +3,9 @@ class User < ActiveRecord::Base
   has_many :moderated_forums, through: :moderatorships, source: :forum
   has_many :forum_reads
   has_many :topic_reads
+  has_many :private_topic_users
+  has_many :private_topics, through: :private_topic_users, source: :topic
+
   LIQUEFIABLE_ATTRIBUTES = %i(name).freeze
   include Liquefiable
 

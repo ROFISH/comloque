@@ -68,9 +68,6 @@ class ForumController < PublicController
   # this shouldn't be in the forum_controller, but for now it lives here until better loginy pages can be made
 
 private
-  def require_user!
-    render text:"You must be logged in to view this page.", layout:true, status: :forbidden unless @user
-  end
 
   def require_forum
     @forum = Forum.find_by_permalink_and_category_permalink(params[:forum],params[:cat])

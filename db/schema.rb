@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150606052645) do
+ActiveRecord::Schema.define(version: 20150608030535) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,15 @@ ActiveRecord::Schema.define(version: 20150606052645) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "scope_id"
+  end
+
+  create_table "private_topic_users", force: :cascade do |t|
+    t.integer  "topic_id",     null: false
+    t.integer  "user_id",      null: false
+    t.datetime "last_read",    null: false
+    t.datetime "last_message", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "reports", force: :cascade do |t|
