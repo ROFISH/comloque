@@ -23,7 +23,7 @@ class Topic < ActiveRecord::Base
   end
 
   def liquid_messages
-    messages.includes(:user)
+    messages.includes(:user).order(:created_at)
   end
 
   def locked?
