@@ -237,6 +237,7 @@ GEM
     rdoc (4.1.1)
       json (~> 1.4)
     rmagick (2.13.4)
+    rubyzip (1.1.7)
     sanitize (3.1.0)
       crass (~> 1.0.1)
       nokogiri (>= 1.4.4)
@@ -294,6 +295,7 @@ DEPENDENCIES
   rails (= 4.2.0)
   rails_12factor
   rmagick
+  rubyzip (>= 1.0.0)
   sanitize
   sass-rails (~> 5.0)
   sdoc

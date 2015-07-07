@@ -1,0 +1,28 @@
+.page-header
+  %h1 One-Time Setup
+
+=form_tag nil,method:"GET",class:"form-horizontal" do
+  .form-group
+    =label_tag :name,'Admin Username',class:"col-sm-2 control-label"
+    .col-sm-7.col-md-5
+      =text_field_tag :name, '', class:'form-control'
+  .form-group
+    =label_tag :email,'Admin Email',class:"col-sm-2 control-label"
+    .col-sm-7.col-md-5
+      =text_field_tag :email, '', class:'form-control'
+  .form-group
+    =label_tag :google,'Google Login',class:"col-sm-2 control-label"
+    .col-sm-7.col-md-5
+      -if INSTALLED_LOGINS['google']
+        &#x2714;
+      -else
+        &#x274C;
+  -if INSTALLED_LOGINS.detect{|k,v| v}.blank?
+    .form-group
+      .col-sm-7.col-md-5.col-sm-offset-2
+        %h3 WARNING NO LOGINS ARE INSTALLED!
+        %h4{style:"color:red"} INSECURE FALLBACK LOGIN ENABLED!
+        %p A fallback no-password login is available in <a href='/login'>/login</a>.
+  .form-group
+    .col-sm-offset-2.col-sm-7.col-md-5
+      =submit_tag 'Submit', class:'btn btn-primary'

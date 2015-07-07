@@ -17,21 +17,21 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   enable_extension "plpgsql"
 
   create_table "assets", force: :cascade do |t|
-    t.string   "key",          limit: 255
-    t.string   "attachment",   limit: 255
-    t.string   "content_type", limit: 255
+    t.string   "key"
+    t.string   "attachment"
+    t.string   "content_type"
     t.integer  "size"
     t.integer  "width"
     t.integer  "height"
     t.integer  "theme_id"
-    t.string   "digest",       limit: 255
+    t.string   "digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "categories", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "permalink",  limit: 255
+    t.string   "name"
+    t.string   "permalink"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -50,15 +50,15 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   end
 
   create_table "forums", force: :cascade do |t|
-    t.string   "name",                 limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "permalink",            limit: 255
+    t.string   "permalink"
     t.integer  "category_id"
-    t.string   "category_permalink",   limit: 255
-    t.string   "privacy",                          default: "public", null: false
-    t.boolean  "allow_create_topic",               default: true,     null: false
-    t.boolean  "allow_create_message",             default: true,     null: false
+    t.string   "category_permalink"
+    t.string   "privacy",              default: "public", null: false
+    t.boolean  "allow_create_topic",   default: true,     null: false
+    t.boolean  "allow_create_message", default: true,     null: false
     t.datetime "last_posted_at"
   end
 
@@ -78,9 +78,9 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   end
 
   create_table "permalinks", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.integer  "thang_id"
-    t.string   "thang_type", limit: 255
+    t.string   "thang_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "scope_id"
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   end
 
   create_table "templates", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.text     "source"
     t.integer  "theme_id"
     t.datetime "created_at"
@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   end
 
   create_table "themes", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -139,21 +139,21 @@ ActiveRecord::Schema.define(version: 20150608030535) do
   end
 
   create_table "topics", force: :cascade do |t|
-    t.string   "name",           limit: 255
+    t.string   "name"
     t.integer  "forum_id"
     t.integer  "user_id"
-    t.string   "permalink",      limit: 255
+    t.string   "permalink"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "messages_count",             default: 0, null: false
+    t.integer  "messages_count", default: 0, null: false
     t.datetime "last_posted_at"
-    t.integer  "views",                      default: 0, null: false
+    t.integer  "views",          default: 0, null: false
     t.datetime "locked_at"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "email",      limit: 255
+    t.string   "name"
+    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "superuser"

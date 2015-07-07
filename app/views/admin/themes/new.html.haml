@@ -3,4 +3,6 @@
 
 =form_for [:admin,@theme], html:{class:"form-horizontal"} do |f|
   =f.bs_text_field :name
+  -if @theme.new_record?
+    =f.bs_file_field :import_zip
   =f.bs_submit

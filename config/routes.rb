@@ -69,6 +69,9 @@ Rails.application.routes.draw do
     end
 
     resources :themes do
+      member do
+        get 'export'
+      end
       resources :templates
       resources :assets
     end

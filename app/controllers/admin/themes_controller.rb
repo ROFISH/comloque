@@ -44,10 +44,26 @@ class ThemesController < ApplicationController
     redirect_to action:'index'
   end
 
+  def export
+    @theme = Theme.find(params[:id])
+    zipfile_name = "/tmp/comloque_theme_#{@theme.id}.zip"
+    Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
+      @theme.templates.all.each do |template|
+        zipfile.get_output_stream("comloque_theme/templates/#{template.name}.liquid") {|os| os.write template.source}
+      end
+    end
+    Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
+      @theme.assets.all.each do |asset|
+        zipfile.get_output_stream("comloque_theme/assets/#{asset.key}") {|os| os.write asset.attachment.read}
+      end
+    end
+    send_file zipfile_name
+  end
+
 private
 
   def theme_params
-    params[:theme].permit(:name)
+    params[:theme].permit(:name,:import_zip)
   end
 end
 end

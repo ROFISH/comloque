@@ -7,6 +7,9 @@
     .alert.alert-success#success{style:'position:absolute;top:0px;left:350px;width:500px;display:none;'}
       %p Successfully Updated
 
+%p
+  =link_to "Export", [:export,:admin,@theme], class:"btn btn-primary"
+
 .row
   .col-sm-3
     .editor-group

@@ -80,6 +80,9 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # for zipping up themes
+  gem 'rubyzip', '>= 1.0.0', require: 'zip'
 end
 
 group :test do
