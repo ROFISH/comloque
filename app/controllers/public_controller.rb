@@ -2,6 +2,8 @@
 # Use concerns for samey things (login, etc.)
 
 class PublicController < ActionController::Base
+  include DevelopmentHelper if Rails.env.development?
+
   # Filters for the Liquid template
   module TextFilter
     def asset_url(input)
@@ -91,6 +93,7 @@ class PublicController < ActionController::Base
     # directly to the render text option
     return options[:text] if !options[:text].blank? && !options[:layout]
     return render_to_json(options[:json]) if !options[:json].blank?
+    return rails_render_to_string(options) if options[:rails] && options[:layout] == 'layouts/application'
 
     # set the body to the text if we are rendering that text to the layout
     if !options[:text].blank? && !options[:layout].blank?
@@ -146,6 +149,7 @@ private
   end
 
   def render_liquid_layout(body)
+    return "NO THEMES INSTALLED :( "+(@user.is_admin? ? "<a href='/admin/themes'>Install a theme.</a>" : "Please login as an admin to edit themes.") if @theme.blank?
     layout = @theme.templates.find_by_name("layout/theme")
     return body if layout.blank?
     compiled_liquid = Liquid::Template.parse(layout.source)
@@ -159,6 +163,7 @@ private
   end
 
   def get_template(options)
+    return nil if @theme.blank?
     @template_name = options[:template] if @template_name.nil?
     options[:prefixes].each do |prefix|
       template = @theme.templates.find_by_name("#{prefix.to_s}/#{@template_name}")

@@ -101,6 +101,8 @@ Rails.application.routes.draw do
   get '/inbox/:topic' => 'inbox#show'
   post '/inbox/:topic/reply' => 'inbox#create'
 
+  get '/login' => 'login#index' if Rails.env.development? && INSTALLED_LOGINS.detect{|k,v| v}.blank?
+  get '/auth/google_oauth2' => 'login#index' if Rails.env.development? && !INSTALLED_LOGINS['google']
   get '/auth/google_oauth2/callback' => 'login#login'
   get '/register' => 'login#register'
   post '/register' => 'login#do_register'

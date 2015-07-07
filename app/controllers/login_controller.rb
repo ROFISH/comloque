@@ -1,6 +1,17 @@
 class LoginController < PublicController
   skip_before_filter :get_user, only:[:logout]
 
+  if Rails.env.development? && INSTALLED_LOGINS.detect{|k,v| v}.blank?
+    def index
+      if params[:email] && user = User.find_by_email(params[:email])
+        session[:user_id] = user.id
+        redirect_to '/'
+      else
+        render rails:true, layout:'application'
+      end
+    end
+  end
+
   def login
     email = request.env["omniauth.auth"]['info']['email']
     user = User.find_by_email(email)
